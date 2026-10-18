@@ -24,16 +24,19 @@ button:disabled{background:transparent;color:var(--mut);box-shadow:none;border-c
 .card small{display:block;color:var(--mut);font-size:.5rem;margin-top:4px}
 .card button{width:auto}
 #ui button{margin-bottom:8px;user-select:none;-webkit-user-select:none}
+#ov{display:none;position:fixed;inset:0;z-index:50;background:rgba(10,14,12,.94);color:#fff;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px;text-align:center;font-size:.7rem;line-height:1.8}#ov button{width:auto;padding:12px 18px}#demo{font-size:.5rem;color:#c98a00;margin:0 0 6px;line-height:1.6}
 </style>
 </head>
 <body>
 <main>
 <h1>Деревня</h1>
-<p>Нажмите на землю, чтобы идти. Нажмите на дерево, камень или железную руду, чтобы добывать. Из дерева и камня стройте дома. Железо нужно для оружия. Ночью идут зомби, оружие бьёт их само. Кнопка снимает броню.</p>
+<div id="demo"></div>
+<p>Нажмите на землю, чтобы идти. Нажмите на дерево, камень или железную руду, чтобы добывать. Сначала постройте ратушу (она собирает налоги), потом дома, фермы и казармы. Железо нужно для оружия. Ночью идут зомби, оружие бьёт их само. Кнопка снимает броню.</p>
 <div id="top"><span id="hp"></span><span id="rt"><span id="hud"></span><button id="arm" title="Снять / надеть броню"></button></span></div>
 <canvas id="c"></canvas>
 <div id="ui"></div>
 </main>
+<div id="ov"></div>
 <script>
 const cv=document.getElementById('c'),ctx=cv.getContext('2d'),hud=document.getElementById('hud'),ui=document.getElementById('ui');
 const T=16,N=96,dpr=window.devicePixelRatio||1;let W=360,H=400;
@@ -186,16 +189,20 @@ const addH=(x,y,t,l)=>{HS.push([x,y,t,HS.length,l||1]);for(let a=0;a<2;a++)for(l
 const free=(x,y)=>{if(x<0||y<0||x+1>=N||y+1>=N)return false;for(let a=0;a<2;a++)for(let b=0;b<2;b++){const k=(x+a)+','+(y+b);if(at[k]||hs.has(k))return false}return true};
 const P={x:48*T,y:50*T,tx:48*T,ty:50*T,tg:null,ht:0},inv={wood:0,stone:0,iron:0,food:40,coin:20},cam={x:0,y:0};
 let build=null,gt=0,last=performance.now();
-const BT={house:{n:'Дом',get c(){const k=nh()-1;return[10+3*k,4+2*k]}},forge:{n:'Кузница',c:[20,15]},granary:{n:'Амбар',get c(){const k=ngr();return[16+8*k,10+6*k]}},tower:{n:'Башня',get c(){const k=ntw();return[18+6*k,26+8*k]}},wall:{n:'Стена',c:[0,3]},barracks:{n:'Казармы',c:[28,22]},farm:{n:'Ферма',get c(){const k=nf();return[8+4*k,2+2*k]}}},WL=['#8a4b2a','#7a7f86','#a0693a','#6b4a7a','#5e7f6a','#a88a4a'],RF=['#c0392b','#2f5fa8','#2f8a4a','#d98a1a','#7a4b9a','#c0392b'],
+const BT={hall:{n:'Ратуша',c:[24,16]},house:{n:'Дом',get c(){const k=nh()-1;return[10+3*k,4+2*k]}},forge:{n:'Кузница',c:[20,15]},granary:{n:'Амбар',get c(){const k=ngr();return[16+8*k,10+6*k]}},tower:{n:'Башня',get c(){const k=ntw();return[18+6*k,26+8*k]}},wall:{n:'Стена',c:[0,3]},barracks:{n:'Казармы',c:[28,22]},farm:{n:'Ферма',get c(){const k=nf();return[8+4*k,2+2*k]}}},WL=['#8a4b2a','#7a7f86','#a0693a','#6b4a7a','#5e7f6a','#a88a4a'],RF=['#c0392b','#2f5fa8','#2f8a4a','#d98a1a','#7a4b9a','#c0392b'],
 WPN=[{id:'sword',n:'Меч',c:[5,5,4],d:9},{id:'bow',n:'Лук',c:[8,3,3],d:7}],own={};
 let fo=false,armor=true;const Z=[];let hp=10,MH=10,zt=15,cyc=0,msg='',msgT=0,atk=0,eq=null,sw=0,hurt=0,starve=false;
 const can=c=>inv.wood>=c[0]&&inv.stone>=c[1]&&inv.iron>=(c[2]||0),cs=c=>c[0]+'🪵 '+c[1]+'🪨'+(c[2]?' '+c[2]+'🔩':''),uc=l=>[3*l,2*l,2*l+1],nh=()=>HS.filter(h=>h[2]=='house').length,fb=()=>HS.some(h=>h[2]=='forge');
 const FR=5,HR=6;const nf=()=>HS.filter(h=>h[2]=='farm').length,mf=()=>Math.ceil(nh()/2),fc=l=>[5+3*l,2+2*l];
-const hudU=()=>{hud.textContent='🪵'+inv.wood+' 🪨'+inv.stone+' 🔩'+inv.iron+' 🌾'+(inv.food|0)+(starve?'⚠':'')+' 🪙'+(inv.coin|0)};
+const hudU=()=>{hud.textContent='🪵'+inv.wood+' 🪨'+inv.stone+' 🔩'+inv.iron+' 🌾'+(inv.food|0)+(starve?'⚠':'')+' 🪙'+(inv.coin|0)+' 👥'+V.length+'/'+capV()+' '+hapE()+(hap|0)+'%'};
 const farmUI=()=>{const f=HS.filter(h=>h[2]=='farm');if(!f.length)return'';
- let s='<p>Склад: '+(inv.food|0)+'/'+cap()+'. Еда: +'+f.reduce((a,h)=>a+(h[4]||1)*FR,0)+'/мин, дома и армия едят '+(nh()*HR+A.length*3)+'/мин</p>';
+ let s='<p>Склад: '+(inv.food|0)+'/'+cap()+'. Еда: +'+f.reduce((a,h)=>a+(h[4]||1)*FR,0)+'/мин, жители и армия едят '+(V.length*2+A.length*3)+'/мин</p>';
  f.forEach((h,i)=>{const l=h[4]||1;s+=`<div class="card"><div><b>Ферма ${i+1}</b><small>уровень ${l}/10, +${l*FR}/мин</small></div>${l<10?`<button data-a="fu:${HS.indexOf(h)}" ${can(fc(l))?'':'disabled'}>Улучшить ${cs(fc(l))}</button>`:'<button disabled>Максимум</button>'}</div>`});return s};
 const A=[],V=[],HC=[8,4,3],maxA=()=>Math.min(12,nh()*2),hb=()=>HS.some(h=>h[2]=='barracks');
+let hap=60,vt=0,arrT=8,fleeT=0,riotT=0,vthr=0,rc=0,uiT=0;
+const hallB=()=>HS.some(h=>h[2]=='hall'),capV=()=>nh()*3,hapE=()=>hap>=70?'😊':hap>=40?'😐':'😠',def=()=>ntw()*6+Math.min(10,Object.keys(WA).length/3)+A.length*2;
+const mkV=(h,arr)=>({h,x:h[0]*T+16,y:h[1]*T+38,tx:h[0]*T+16,ty:h[1]*T+38,w:Math.random()*3,c:V.length%5,fl:false,mv:false,hide:false,arr:!!arr,hp:10,mh:10});
+const vcard=()=>`<div class="card"><div><b>Деревня</b><small>жителей ${V.length}/${capV()}, настроение ${hap|0}% ${hapE()} ${hap>=70?'(+25% к добыче)':hap<=30?'(−20% к добыче)':''}<br>оборона ${def()|0}, налог +${(V.length*hap/100*.75).toFixed(1)}🪙/мин</small></div></div>`;
 const armyUI=()=>`<div class="card"><div><b>Армия</b><small>солдат ${A.length}/${maxA()}, едят 3/мин</small></div><button data-a="hire" ${can(HC)&&A.length<maxA()?'':'disabled'}>Нанять ${cs(HC)}</button></div>`;
 const WA={},SH=[],PR={wood:1,stone:2,iron:4};let tr=false;
 const ngr=()=>HS.filter(h=>h[2]=='granary').length,ntw=()=>HS.filter(h=>h[2]=='tower').length,cap=()=>100+100*ngr();
@@ -208,7 +215,8 @@ function render(){
  if(tr){ui.innerHTML=tradeUI();return}
  let h='';
  if(build)h+='<button data-a="cancel">Отмена: нажмите на свободное место</button>';
- else{h+=`<button data-a="b:house" ${can(BT.house.c)&&nh()<8?'':'disabled'}>Построить дом ${cs(BT.house.c)} (${nh()}/8)</button>`;
+ else if(!hallB()){h+=`<button data-a="b:hall" ${can(BT.hall.c)?'':'disabled'}>Построить ратушу ${cs(BT.hall.c)}</button><p>Ратуша собирает налоги с жителей. Пока её нет, другие здания недоступны.</p>`}
+ else{h+=vcard()+`<button data-a="b:house" ${can(BT.house.c)&&nh()<8?'':'disabled'}>Построить дом ${cs(BT.house.c)} (${nh()}/8)</button>`;
   if(nh()>=1)h+=`<button data-a="b:farm" ${can(BT.farm.c)&&nf()<mf()?'':'disabled'}>Построить ферму ${cs(BT.farm.c)} (${nf()}/${mf()})</button>`;
   if(!fb()){if(nh()>=2)h+=`<button data-a="b:forge" ${can(BT.forge.c)?'':'disabled'}>Построить кузницу ${cs(BT.forge.c)}</button>`;else h+='<p>Кузница откроется после второго дома.</p>'}
   if(nh()>=3&&!hb())h+=`<button data-a="b:barracks" ${can(BT.barracks.c)?'':'disabled'}>Построить казармы ${cs(BT.barracks.c)}</button>`;
@@ -225,13 +233,14 @@ function render(){
   }
  ui.innerHTML=h}
 ui.addEventListener('click',e=>{const a=e.target.dataset.a;if(!a||e.target.disabled)return;const[k,id]=a.split(':');
- if(k=='armor'){armor=!armor;P.fx=.4}if(k=='fu'){const f=HS[+id];if(f&&f[2]=='farm'&&(f[4]||1)<10){const c=fc(f[4]||1);if(can(c)){pay(c);f[4]=(f[4]||1)+1}}}if(k=='sell'){const q=id=='iron'?2:5;if(inv[id]>=q){inv[id]-=q;inv.coin+=q*PR[id]}}if(k=='buy'&&inv.coin>=12&&inv.food+10<=cap()){inv.coin-=12;inv.food+=10}if(k=='topen')tr=true;if(k=='tclose')tr=false;if(k=='hire'&&hb()&&A.length<maxA()&&can(HC)){pay(HC);A.push(newSoldier())}if(k=='eq'&&own[id])eq=id;if(k=='b')build=id;if(k=='cancel')build=null;if(k=='close')fo=false;
+ if(k=='armor'){armor=!armor;P.fx=.4}if(k=='fu'){const f=HS[+id];if(f&&f[2]=='farm'&&(f[4]||1)<10){const c=fc(f[4]||1);if(can(c)){pay(c);f[4]=(f[4]||1)+1}}}if(k=='sell'){const q=id=='iron'?2:5;if(inv[id]>=q){inv[id]-=q;inv.coin+=q*PR[id]}}if(k=='buy'&&inv.coin>=12&&inv.food+10<=cap()){inv.coin-=12;inv.food+=10}if(k=='topen')tr=true;if(k=='tclose')tr=false;if(k=='hire'&&hb()&&A.length<maxA()&&can(HC)){pay(HC);A.push(newSoldier())}if(k=='eq'&&own[id])eq=id;if(k=='b'&&BT[id]&&(id=='hall'?!hallB():hallB()))build=id;if(k=='cancel')build=null;if(k=='close')fo=false;
  if(k=='mk'){const w=WPN.find(x=>x.id==id);if(!own[id]&&can(w.c)){pay(w.c);own[id]=1;eq=id}}
  if(k=='up'&&own[id]&&own[id]<5){const c=uc(own[id]);if(can(c)){pay(c);own[id]++}}
  render()});
 ui.addEventListener('contextmenu',e=>e.preventDefault());
+['pointerdown','scroll','touchmove','wheel'].forEach(ev=>ui.addEventListener(ev,()=>{uiT=performance.now()},{passive:true}));
 cv.addEventListener('pointerdown',e=>{const r=cv.getBoundingClientRect(),wx=cam.x+(e.clientX-r.left)*W/r.width,wy=cam.y+(e.clientY-r.top)*H/r.height,tx=wx/T|0,ty=wy/T|0;
- if(build){const bt=BT[build];if(build=='wall'){if(fr1(tx,ty)&&can(bt.c)){pay(bt.c);addW(tx,ty);render();return}}else if(free(tx,ty)&&can(bt.c)){pay(bt.c);addH(tx,ty,build);build=null;render();return}}
+ if(build){const bt=BT[build];if(build=='wall'){if(fr1(tx,ty)&&can(bt.c)){pay(bt.c);addW(tx,ty);render();return}}else if(free(tx,ty)&&can(bt.c)&&(build=='hall'||hallB())&&!(build=='house'&&nh()>=8)&&!(build=='hall'&&hallB())){pay(bt.c);addH(tx,ty,build);build=null;render();return}}
  const fh=HS.find(h=>h[2]=='forge'&&tx>=h[0]&&tx<=h[0]+1&&ty>=h[1]&&ty<=h[1]+1);
  if(fh){P.tg=null;P.tx=fh[0]*T+16;P.ty=(fh[1]+2)*T+8;P.of=true;return}
  P.of=false;if(fo){fo=false;render()}
@@ -240,21 +249,31 @@ cv.addEventListener('pointerdown',e=>{const r=cv.getBoundingClientRect(),wx=cam.
 const pay=c=>{inv.wood-=c[0];inv.stone-=c[1];inv.iron-=c[2]||0};
 const wdm=id=>{const w=WPN.find(x=>x.id==id);return Math.round(w.d*(1+.2*(own[id]-1)))};
 const nightF=()=>{const p=cyc%180;return p<112?0:p<120?(p-112)/8:p<172?1:(180-p)/8};
-const newSoldier=()=>{const b=HS.find(h=>h[2]=='barracks')||HS[0];return{x:b[0]*T+16,y:b[1]*T+38,hp:14,mh:14,ct:0,fl:false,mv:false}};
-function vil(dt){const hs=HS.filter(h=>h[2]=='house'),nt=nightF()>.3;
- while(V.length<hs.length*2){const h=hs[V.length>>1],x=h[0]*T+16,y=h[1]*T+38;V.push({h,x,y,tx:x,ty:y,w:Math.random()*3,c:V.length%5,fl:false,mv:false,hide:false})}
+const newSoldier=()=>{const b=HS.find(h=>h[2]=='barracks')||HS[0];return{x:b[0]*T+16,y:b[1]*T+38,hp:18,mh:18,ct:0,fl:false,mv:false}};
+function vil(dt){const hs2=HS.filter(h=>h[2]=='house'),nt=nightF()>.3,nm=h=>V.filter(v=>v.h===h).length;
+ arrT-=dt;if(arrT<=0&&hs2.length){arrT=22;const h=hs2.filter(h=>nm(h)<3).sort((a,b)=>nm(a)-nm(b))[0];
+  if(h&&V.length<capV()&&hap>=30&&inv.food>V.length*2){const v=mkV(h,true),an=Math.random()*6.283;v.x=Math.max(8,Math.min(N*T-8,v.x+Math.cos(an)*200));v.y=Math.max(8,Math.min(N*T-8,v.y+Math.sin(an)*200));v.mv=true;V.push(v);msg='В деревню идёт новый житель';msgT=3}}
  V.forEach(v=>{const hx=v.h[0]*T+16,hy=v.h[1]*T+38;
-  if(nt){v.tx=hx;v.ty=hy;v.w=0}else if(v.w<=0){v.tx=hx+(Math.random()-.5)*70;v.ty=hy+(Math.random()-.2)*30;v.w=2+Math.random()*4}else if(Math.hypot(v.tx-v.x,v.ty-v.y)<2)v.w-=dt;
+  if(v.arr){v.tx=hx;v.ty=hy;if(Math.hypot(hx-v.x,hy-v.y)<6)v.arr=false}
+  else if(nt){v.tx=hx;v.ty=hy;v.w=0}else if(v.w<=0){v.tx=hx+(Math.random()-.5)*70;v.ty=hy+(Math.random()-.2)*30;v.w=2+Math.random()*4}else if(Math.hypot(v.tx-v.x,v.ty-v.y)<2)v.w-=dt;
   const dx=v.tx-v.x,dy=v.ty-v.y,m=Math.hypot(dx,dy);v.mv=m>2;
-  if(m>2){const s=Math.min(m,16*dt);v.x+=dx/m*s;v.y+=dy/m*s;v.fl=dx<0}
-  v.hide=nt&&m<=4})}
+  if(m>2){const s=Math.min(m,(v.arr?24:16)*dt);v.x+=dx/m*s;v.y+=dy/m*s;v.fl=dx<0}
+  v.hide=!v.arr&&nt&&m<=4});
+ for(let i=V.length-1;i>=0;i--)if(V[i].hp<=0){V.splice(i,1);hap=Math.max(0,hap-8);msg='Зомби убили жителя!';msgT=4}}
+function village(dt){vt-=dt;if(vt>0)return;vt=1;
+ const n=V.length,tg=40+(inv.food>n*3?15:inv.food>0?0:-30)+Math.min(25,def())+(hallB()?5:0)-Math.min(30,vthr*6);vthr=0;
+ hap+=(Math.max(0,Math.min(100,tg))-hap)*.06;
+ if(hallB())inv.coin+=n*hap/100*.0125;
+ if(hap<25&&n>1){if(++fleeT>=25){fleeT=0;V.pop();msg='Недовольный житель ушёл';msgT=4}}else fleeT=0;
+ if(hap<12){if(++riotT>=40){riotT=0;inv.wood=Math.floor(inv.wood*.8);inv.stone=Math.floor(inv.stone*.8);hap+=8;msg='Бунт! Потеряна часть ресурсов';msgT=4}}else riotT=0;
+ hudU();if(performance.now()-uiT>2500&&++rc%5==0)render()}
 function army(dt){
  A.forEach((a,i)=>{let tg=null,td=130;Z.forEach(z=>{const d=Math.hypot(z.x-a.x,z.y-a.y);if(d<td){td=d;tg=z}});
   let tx,ty;if(tg){tx=tg.x;ty=tg.y}else{const an=i*2.4+gt*.15;tx=P.x+Math.cos(an)*30;ty=P.y+Math.sin(an)*30;if(Math.hypot(P.x-a.x,P.y-a.y)>260){a.x=P.x;a.y=P.y}}
   const dx=tx-a.x,dy=ty-a.y,m=Math.hypot(dx,dy),st=tg?13:6;a.mv=m>st;
   if(m>st){const s=Math.min(m,(tg?48:70)*dt);a.x+=dx/m*s;a.y+=dy/m*s;a.fl=dx<0}
   a.ct-=dt;if(tg&&td<=15&&a.ct<=0){a.ct=.8;tg.hp-=7}
-  if(!tg)a.hp=Math.min(a.mh,a.hp+dt*.5);Z.forEach(z=>{if(Math.hypot(z.x-a.x,z.y-a.y)<12)a.hp-=dt})});
+  if(!tg)a.hp=Math.min(a.mh,a.hp+dt*.5)});
  for(let i=A.length-1;i>=0;i--)if(A[i].hp<=0){A.splice(i,1);msg='Солдат погиб';msgT=3}}
 function misc(dt){
  for(const k in WA)if(WA[k].hp<=0){hs.delete(k);delete WA[k]}
@@ -262,30 +281,33 @@ function misc(dt){
   if(tg){h[5]=1.1;tg.hp-=6;SH.push({x1:ox,y1:oy,x2:tg.x,y2:tg.y,t:.15})}});
  for(let i=SH.length-1;i>=0;i--){SH[i].t-=dt;if(SH[i].t<=0)SH.splice(i,1)}}
 function tick(dt){
- cyc+=dt;{const pr=HS.reduce((a,h)=>a+(h[2]=='farm'?(h[4]||1)*FR/60:0),0),cn=(nh()*HR+A.length*3)/60;inv.food=Math.max(0,Math.min(Math.max(cap(),inv.food),inv.food+(pr-cn)*dt));const s2=inv.food<=0&&cn>pr;if(s2&&!starve){msg='Деревня голодает! Нужны фермы';msgT=4}starve=s2;P.fr=(P.fr||0)-dt;if(P.fr<=0){P.fr=1;hudU()}}
+ cyc+=dt;{const pr=HS.reduce((a,h)=>a+(h[2]=='farm'?(h[4]||1)*FR/60:0),0),cn=(V.length*2+A.length*3)/60;inv.food=Math.max(0,Math.min(Math.max(cap(),inv.food),inv.food+(pr-cn)*dt));const s2=inv.food<=0&&cn>pr;if(s2&&!starve){msg='Деревня голодает! Нужны фермы';msgT=4}starve=s2;P.fr=(P.fr||0)-dt;if(P.fr<=0){P.fr=1;hudU()}}
  const nf=nightF(),night=nf>.5;
  if(msgT>0)msgT-=dt;if(hurt>0)hurt-=dt;if(sw>0)sw-=dt;atk-=dt;zt-=dt;
- if(zt<=0){zt=night?9+Math.random()*7:25+Math.random()*20;
-  if(Z.length<(night?4:1)){const a=Math.random()*6.283,d=170+Math.random()*60,zh=20+4*Math.min(5,cyc/180|0),cl=v=>Math.max(8,Math.min(N*T-8,v));
+ if(zt<=0){zt=night?6+Math.random()*5:22+Math.random()*16;
+  if(Z.length<(night?6:2)){const a=Math.random()*6.283,d=170+Math.random()*60,zh=30+5*Math.min(8,cyc/180|0),cl=v=>Math.max(8,Math.min(N*T-8,v));
    Z.push({x:cl(P.x+Math.cos(a)*d),y:cl(P.y+Math.sin(a)*d),hp:zh,mh:zh,ct:0,fl:false,n:night})}}
  let near=null,nd=1e9;
- for(let i=Z.length-1;i>=0;i--){const z=Z[i],dx=P.x-z.x,dy=P.y-z.y,m=Math.hypot(dx,dy);
+ for(let i=Z.length-1;i>=0;i--){const z=Z[i],dp=Math.hypot(P.x-z.x,P.y-z.y);let T2=null,td=1e9;
+  A.forEach(a=>{const d=Math.hypot(a.x-z.x,a.y-z.y);if(d<td){td=d;T2=a}});
+  if(!T2)V.forEach(v=>{const d=Math.hypot(v.x-z.x,v.y-z.y);if(d<td){td=d;T2=v}});
+  const pl=!T2,dx=(pl?P.x:T2.x)-z.x,dy=(pl?P.y:T2.y)-z.y,m=Math.hypot(dx,dy);
   if(!night&&z.n)z.hp-=2*dt;
   if(z.hp<=0){Z.splice(i,1);continue}
-  if(m>12){const s=Math.min(m,(night?34:26)*dt),nx=z.x+dx/m*s,ny=z.y+dy/m*s,wd=wallAt(nx,ny);if(!wd){z.x=nx;z.y=ny}else{if(!wallAt(nx,z.y))z.x=nx;else if(!wallAt(z.x,ny))z.y=ny;wd.hp-=dt*2}z.fl=dx<0}
-  z.ct-=dt;if(m<=13&&z.ct<=0){z.ct=1;hp-=armor?1:2;hurt=.3}
-  if(m<nd){nd=m;near=z}}
+  if(m>12){const s=Math.min(m,(night?38:29)*dt),nx=z.x+dx/m*s,ny=z.y+dy/m*s,wd=wallAt(nx,ny);if(!wd){z.x=nx;z.y=ny}else{if(!wallAt(nx,z.y))z.x=nx;else if(!wallAt(z.x,ny))z.y=ny;wd.hp-=dt*2}z.fl=dx<0}
+  z.ct-=dt;if(m<=13&&z.ct<=0){z.ct=1;if(pl){hp-=armor?2:3;hurt=.3}else{T2.hp-=3;if(T2.h)vthr+=1}}
+  if(dp<nd){nd=dp;near=z}}
  const w=eq&&own[eq]?WPN.find(x=>x.id==eq):null,rg=w&&w.id=='bow'?58:26;
  if(near&&nd<=rg&&atk<=0){atk=w&&w.id=='axe'?.9:.6;sw=.18;P.fl=near.x<P.x;near.hp-=w?wdm(w.id):3;const k=nd||1;near.x+=(near.x-P.x)/k*4;near.y+=(near.y-P.y)/k*4}
  if(hp<MH&&hurt<=0&&nd>120&&!starve){P.rg=(P.rg||0)+dt;if(P.rg>4){P.rg=0;hp++}}
  if(hp<=0){const l=[];['wood','stone','iron'].forEach((k,i)=>{const n=Math.ceil(inv[k]*.15);inv[k]-=n;l.push(n+['🪵','🪨','🔩'][i])});
   msg='Вы погибли! Потеряно: '+l.join(' ');msgT=4;hp=MH;Z.length=0;const h=HS[0];P.x=P.tx=h[0]*T+16;P.y=P.ty=(h[1]+3)*T;P.tg=null;P.of=false;render()}}
 function update(dt){
- gt+=dt;if(P.fx>0)P.fx-=dt;try{tick(dt)}catch(e){console.error(e)}try{army(dt);vil(dt);misc(dt)}catch(e){console.error(e)}
+ gt+=dt;if(P.fx>0)P.fx-=dt;try{tick(dt)}catch(e){console.error(e)}try{army(dt);vil(dt);village(dt);misc(dt)}catch(e){console.error(e)}
  O.forEach(o=>{if(o.dead&&gt>o.back){o.dead=false;o.hp=D[o.t].h;mmD=true}if(o.hit>0)o.hit-=dt});
  const tg=P.tg;
  if(tg&&Math.hypot(tg.x*T+8-P.x,tg.y*T+8-P.y)<=16){P.tx=P.x;P.ty=P.y;P.mv=false;P.fl=tg.x*T+8<P.x;P.ht-=dt;
-  if(P.ht<=0){P.ht=.6;tg.hit=.12;if(--tg.hp<=0){inv[D[tg.t].g]+=D[tg.t].n;tg.dead=true;mmD=true;tg.back=gt+45;P.tg=null;render()}}return}
+  if(P.ht<=0){P.ht=.6/(hap>=70?1.25:hap<=30?.8:1);tg.hit=.12;if(--tg.hp<=0){inv[D[tg.t].g]+=D[tg.t].n;tg.dead=true;mmD=true;tg.back=gt+45;P.tg=null;render()}}return}
  const dx=P.tx-P.x,dy=P.ty-P.y,m=Math.hypot(dx,dy);P.mv=m>2;if(m>2&&Math.abs(dx)>1)P.fl=dx<0;
  if(m>2){const s=Math.min(m,80*dt*(starve?.7:1));P.x+=dx/m*s;P.y+=dy/m*s}
  if(P.of&&Math.hypot(P.tx-P.x,P.ty-P.y)<=3){P.of=false;fo=true;render()}
@@ -342,6 +364,14 @@ function tower(sx,sy){
  for(let k=0;k<4;k++){R(DK,sx+5+k*6,sy+2,4,7);R('#9aa0a8',sx+6+k*6,sy+3,2,6)}R(DK,sx+5,sy+8,22,2);
  R(DK,sx+15,sy+14,2,7);R('#ffd45c',sx+15,sy+16,2,3);R(DK,sx+12,sy+23,8,9);R('#4a2a12',sx+13,sy+24,6,8);
  R('#a8743a',sx+16,sy-6,1,9);R('#e0463a',sx+17,sy-6,6,3)}
+function hall(sx,sy){
+ R('rgba(0,0,0,.25)',sx+1,sy+30,32,3);R(DK,sx+1,sy+9,30,23);R('#9a9ea6',sx+2,sy+10,28,21);
+ for(let i=0;i<5;i++){const y=sy+12+i*4;R('rgba(0,0,0,.2)',sx+2,y+3,28,1);for(let j=i%2?3:6;j<28;j+=7)R('rgba(0,0,0,.2)',sx+2+j,y,1,3)}
+ R('rgba(255,255,255,.14)',sx+2,sy+10,2,21);R('rgba(0,0,0,.2)',sx+28,sy+10,2,21);
+ for(let k=0;k<4;k++){R(DK,sx+1+k*8,sy+4,6,6);R('#9a9ea6',sx+2+k*8,sy+5,4,5)}R(DK,sx+1,sy+9,30,1);
+ R(DK,sx+11,sy+19,10,13);R('#6b3f1d',sx+12,sy+20,8,12);R('#8a5a2d',sx+12,sy+20,3,12);R('#ffd45c',sx+18,sy+26,1,2);
+ R('#c0392b',sx+4,sy+14,5,9);R('#ffd45c',sx+5,sy+16,3,3);R('#c0392b',sx+23,sy+14,5,9);R('#ffd45c',sx+24,sy+16,3,3);
+ R('#a8743a',sx+16,sy-6,1,10);R('#e0463a',sx+17,sy-6,7,4);R('#ffd45c',sx+18,sy-5,3,2)}
 function farm(sx,sy,l){
  R('rgba(0,0,0,.2)',sx+1,sy+30,32,3);R(DK,sx,sy+7,32,25);R('#7a5230',sx+1,sy+8,30,23);
  for(let r=0;r<4;r++){const y=sy+11+r*5;R('#5e3f22',sx+1,y+3,30,2);
@@ -371,9 +401,9 @@ function draw(){
   ctx.drawImage(S[o.t],sx,sy);
   if(P.tg===o&&o.hp<D[o.t].h){R('#1d2420',sx,sy-6,16,3);R('#ffd45c',sx,sy-6,16*o.hp/D[o.t].h,3)}});
  Object.values(WA).forEach(w=>{const sx=w.x*T-cam.x,sy=w.y*T-cam.y;if(sx<-T||sy<-T||sx>W||sy>H)return;ctx.drawImage(S.wall,sx,sy);if(w.hp<18){R('#1d2420',sx+4,sy+6,1,6);R('#1d2420',sx+5,sy+11,3,1);R('#1d2420',sx+10,sy+7,1,5)}});
- HS.forEach(([x,y,t,i,l])=>{const sx=x*T-cam.x,sy=y*T-cam.y;if(t=='forge')forge(sx,sy);else if(t=='farm')farm(sx,sy,l||1);else if(t=='barracks')barracks(sx,sy);else if(t=='granary')granary(sx,sy);else if(t=='tower')tower(sx,sy);else house(sx,sy,i%6)});
+ HS.forEach(([x,y,t,i,l])=>{const sx=x*T-cam.x,sy=y*T-cam.y;if(t=='forge')forge(sx,sy);else if(t=='farm')farm(sx,sy,l||1);else if(t=='barracks')barracks(sx,sy);else if(t=='granary')granary(sx,sy);else if(t=='tower')tower(sx,sy);else if(t=='hall')hall(sx,sy);else house(sx,sy,i%6)});
  V.forEach(v=>{if(v.hide)return;const vx=Math.round(v.x-cam.x),vy=Math.round(v.y-cam.y);if(vx<-16||vy<-16||vx>W+16||vy>H+16)return;
-  R('rgba(0,0,0,.3)',vx-5,vy+6,10,3);ctx.drawImage((v.fl?S.vL:S.v)[v.c],vx-8,vy-8+(v.mv&&(gt*8|0)%2?-1:0))});
+  R('rgba(0,0,0,.3)',vx-5,vy+6,10,3);ctx.drawImage((v.fl?S.vL:S.v)[v.c],vx-8,vy-8+(v.mv&&(gt*8|0)%2?-1:0));if(v.hp<v.mh){R('#1d2420',vx-6,vy-12,12,3);R('#e0463a',vx-6,vy-12,12*Math.max(0,v.hp)/v.mh,3)}});
  A.forEach(a=>{const ax=Math.round(a.x-cam.x),ay=Math.round(a.y-cam.y),b=a.mv&&(gt*10|0)%2?-1:0;if(ax<-16||ay<-16||ax>W+16||ay>H+16)return;
   R('rgba(0,0,0,.3)',ax-6,ay+6,12,3);ctx.drawImage(a.fl?S.sdL:S.sd,ax-8,ay-8+b);const px=ax+(a.fl?-6:5);R('#a8743a',px,ay-11+b,1,18);R('#1d2420',px-1,ay-15+b,3,4);R('#e6edf3',px,ay-14+b,1,2);
   if(a.hp<a.mh){R('#1d2420',ax-8,ay-14,16,3);R('#4aa6ff',ax-8,ay-14,16*a.hp/a.mh,3)}});
@@ -393,28 +423,47 @@ function draw(){
   const lamp=(cx,cy,rad,col,a)=>{const gr=ctx.createRadialGradient(cx,cy,2,cx,cy+4,rad);gr.addColorStop(0,'rgba('+col+','+a.toFixed(2)+')');gr.addColorStop(1,'rgba('+col+',0)');ctx.fillStyle=gr;ctx.fillRect(cx-rad,cy-rad,rad*2,rad*2+6)};
   if(t=='house'){const wx=sx+(i%2?7:19),wy=sy+19;lamp(wx+3,wy+4,26,'255,200,90',.5*fl);
    R('rgba(255,214,110,'+fl.toFixed(2)+')',wx,wy,6,6);R('rgba(255,248,200,'+fl.toFixed(2)+')',wx+1,wy+1,2,2);R(DK,wx+2,wy,1,6);R(DK,wx,wy+2,6,1)}
-  else if(t=='forge')lamp(sx+16,sy+26,30,'255,150,50',.45*fl)});
+  else if(t=='forge')lamp(sx+16,sy+26,30,'255,150,50',.45*fl);
+  else if(t=='tower'){lamp(sx+17,sy+3,46,'255,214,120',.62*fl);lamp(sx+16,sy+18,28,'255,200,90',.42*fl);R('rgba(255,236,150,'+fl.toFixed(2)+')',sx+14,sy+13,4,9);R('rgba(255,248,210,'+fl.toFixed(2)+')',sx+17,sy-6,6,3)}
+  else if(t=='hall'){lamp(sx+16,sy+22,36,'255,200,90',.45*fl);R('rgba(255,214,110,'+fl.toFixed(2)+')',sx+5,sy+16,5,6);R('rgba(255,214,110,'+fl.toFixed(2)+')',sx+22,sy+16,5,6)}});
  if(hurt>0)R('rgba(214,64,47,'+Math.min(.4,hurt*.8).toFixed(2)+')',0,0,W,H);
   ctx.font='8px "Press Start 2P",monospace';ctx.textBaseline='top';ctx.textAlign='left';
  R('rgba(0,0,0,.5)',4,4,80,11);ctx.fillStyle='#fff';ctx.fillText((nt?'Ночь ':'День ')+(lf/60|0)+':'+String(lf%60).padStart(2,'0'),6,6);
  if(msgT>0){ctx.textAlign='center';const mw=ctx.measureText(msg).width;R('rgba(0,0,0,.65)',W/2-mw/2-4,H-26,mw+8,14);ctx.fillStyle='#ffd45c';ctx.fillText(msg,W/2,H-23)}
  if(mmD)buildMM();ctx.drawImage(MM,W-54,6);
- HS.forEach(([x,y,t])=>R(t=='forge'?'#ff9a2e':t=='farm'?'#8fdc72':t=='barracks'?'#e0463a':t=='granary'?'#e8c24a':t=='tower'?'#c4cad2':'#ffd45c',W-54+x/2,6+y/2,3,3));
+ HS.forEach(([x,y,t])=>R(t=='forge'?'#ff9a2e':t=='farm'?'#8fdc72':t=='barracks'?'#e0463a':t=='granary'?'#e8c24a':t=='tower'?'#c4cad2':t=='hall'?'#ffffff':'#ffd45c',W-54+x/2,6+y/2,3,3));
  A.forEach(a=>R('#4aa6ff',W-54+a.x/T/2-1,6+a.y/T/2-1,2,2));Z.forEach(z=>R('#ff3b3b',W-54+z.x/T/2-1,6+z.y/T/2-1,2,2));R('#fff',W-54+P.x/T/2-1,6+P.y/T/2-1,3,3)}
 let lh=-1,ec=0;function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;try{update(dt);draw();if(hp!==lh){lh=hp;document.getElementById('hp').innerHTML=Array.from({length:MH},(_,i)=>'<i style="background:'+(i<hp?'#e0463a':'#4a2020')+'"></i>').join('')}}catch(e){if(ec++<5)console.error(e)}requestAnimationFrame(loop)}
-const K='village-save-v1';
-function save(){try{localStorage.setItem(K,JSON.stringify({inv,HS:HS.map(h=>[h[0],h[1],h[2],h[4]]),own,armor,eq,cyc,army:A.length,walls:Object.values(WA).map(w=>[w.x,w.y]),x:P.x,y:P.y}))}catch(e){}}
-function load(){try{const d=JSON.parse(localStorage.getItem(K));if(!d||!Array.isArray(d.HS))return;
+const API='https://cjqjesncvltqqzqbsblk.supabase.co/functions/v1/game',SID=Math.random().toString(36).slice(2)+Date.now().toString(36);
+let locked=false,saving=false,lastJ='',demo=false,started=false;
+const ov=document.getElementById('ov'),initData=()=>(window.Telegram&&Telegram.WebApp&&Telegram.WebApp.initData)||'';
+const overlay=(t,b,f)=>{ov.style.display='flex';ov.innerHTML='<div>'+t+'</div>'+(b?'<button id="ovb">'+b+'</button>':'');if(b)document.getElementById('ovb').onclick=f};
+const tgWait=()=>new Promise(res=>{const t0=Date.now();(function f(){if(initData()||Date.now()-t0>4000)res();else setTimeout(f,100)})()});
+async function api(action,data,keep){const r=await fetch(API,{method:'POST',keepalive:!!keep,headers:{'Content-Type':'application/json'},body:JSON.stringify({initData:initData(),action,sid:SID,data})});let j={};try{j=await r.json()}catch(e){}return{s:r.status,j}}
+const snap=()=>({v:2,inv,HS:HS.map(h=>[h[0],h[1],h[2],h[4]]),own,armor,eq,cyc,army:A.length,vil:V.length,hap:Math.round(hap),walls:Object.values(WA).map(w=>[w.x,w.y]),x:Math.round(P.x),y:Math.round(P.y)});
+function apply(d){try{if(!d||!Array.isArray(d.HS))return;
  const num=(v,lo,hi,df)=>typeof v=='number'&&isFinite(v)?Math.max(lo,Math.min(hi,v)):df,ok=Number.isInteger;
- const hl=d.HS.filter(h=>Array.isArray(h)&&['house','farm','forge','barracks','granary','tower'].includes(h[2])&&ok(h[0])&&ok(h[1])&&h[0]>=0&&h[1]>=0&&h[0]<N-1&&h[1]<N-1);
+ const hl=d.HS.filter(h=>Array.isArray(h)&&['house','farm','forge','barracks','granary','tower','hall'].includes(h[2])&&ok(h[0])&&ok(h[1])&&h[0]>=0&&h[1]>=0&&h[0]<N-1&&h[1]<N-1);
  if(!hl.length)return;
  HS.length=0;hs.clear();hl.forEach(h=>addH(h[0],h[1],h[2],Math.round(num(h[3],1,10,1))));
  const iv=d.inv||{};['wood','stone','iron','food','coin'].forEach(k=>{inv[k]=num(iv[k],0,k=='food'?1e4:1e9,inv[k])});
  WPN.forEach(w=>{const l=d.own&&d.own[w.id];if(ok(l)&&l>=1&&l<=5)own[w.id]=l});
- eq=own[d.eq]?d.eq:Object.keys(own)[0]||null;if(d.armor===false)armor=false;cyc=num(d.cyc,0,1e7,0);for(let i=0,n=num(d.army,0,12,0)|0;i<n;i++)A.push(newSoldier());(Array.isArray(d.walls)?d.walls:[]).forEach(w=>{if(Array.isArray(w)&&ok(w[0])&&ok(w[1])&&fr1(w[0],w[1]))addW(w[0],w[1])});
+ eq=own[d.eq]?d.eq:Object.keys(own)[0]||null;if(d.armor===false)armor=false;cyc=num(d.cyc,0,1e7,0);
+ A.length=0;for(let i=0,n=num(d.army,0,12,0)|0;i<n;i++)A.push(newSoldier());
+ (Array.isArray(d.walls)?d.walls:[]).forEach(w=>{if(Array.isArray(w)&&ok(w[0])&&ok(w[1])&&fr1(w[0],w[1]))addW(w[0],w[1])});
+ hap=num(d.hap,0,100,hap);const hs2=HS.filter(h=>h[2]=='house');V.length=0;
+ for(let i=0,n=Math.min(num(d.vil,0,99,0)|0,capV());i<n&&hs2.length;i++)V.push(mkV(hs2[i%hs2.length]));
  P.x=P.tx=num(d.x,8,N*T-8,P.x);P.y=P.ty=num(d.y,8,N*T-8,P.y)}catch(e){}}
-document.getElementById('arm').addEventListener('pointerdown',e=>{e.preventDefault();armor=!armor;P.fx=.4;render()});load();render();requestAnimationFrame(loop);
-setInterval(save,3000);addEventListener('pagehide',save);document.addEventListener('visibilitychange',()=>{if(document.hidden)save()});
+async function save(keep){if(demo||locked||saving||!started)return;const j=JSON.stringify(snap());if(j===lastJ)return;saving=true;
+ try{const r=await api('save',JSON.parse(j),keep);if(r.s==200)lastJ=j;else if(r.s==409){locked=true;overlay('Игра открыта на другом устройстве.','Играть здесь',()=>location.reload())}else if(r.s==401){locked=true;overlay('Сессия устарела. Закройте игру и откройте её заново из Telegram.')}}catch(e){}saving=false}
+async function boot(){
+ try{localStorage.removeItem('village-save-v1')}catch(e){}
+ if(API){overlay('Загрузка…');await tgWait()}
+ if(!API||!initData()){demo=true;ov.style.display='none';document.getElementById('demo').textContent=API?'Демо-режим: откройте игру через Telegram, чтобы прогресс сохранялся на сервере.':'Демо-режим: сервер не подключён, прогресс не сохраняется.'}
+ else{try{const r=await api('load');if(r.s!=200)throw new Error(r.s);if(r.j.data)apply(r.j.data);ov.style.display='none'}catch(e){overlay('Нет связи с сервером. Ваш прогресс не потерян.','Повторить',boot);return}}
+ if(!started){started=true;render();requestAnimationFrame(loop);
+  if(!demo){setInterval(()=>save(),15000);addEventListener('pagehide',()=>save(true));document.addEventListener('visibilitychange',()=>{if(document.hidden)save(true)})}}}
+document.getElementById('arm').addEventListener('pointerdown',e=>{e.preventDefault();armor=!armor;P.fx=.4;render()});boot();
 const tgInit=()=>{try{Telegram.WebApp.ready();Telegram.WebApp.expand()}catch(e){}};addEventListener('load',tgInit);tgInit();
 </script>
 </body>
