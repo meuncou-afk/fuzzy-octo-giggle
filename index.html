@@ -7,45 +7,102 @@
 <script async src="https://telegram.org/js/telegram-web-app.js"></script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" media="print" onload="this.media='all'">
 <style>
-:root{color-scheme:light;--bg:#eef1ee;--fg:#1d2420;--mut:#5d6a62;--line:#d2dad4;--card:#f9faf9;--me:#1f6feb;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#121816;--fg:#e8eee9;--mut:#93a198;--line:#27312c;--card:#1a221e;--me:#5aa2ff}}
-:root[data-theme="dark"]{color-scheme:dark;--bg:#121816;--fg:#e8eee9;--mut:#93a198;--line:#27312c;--card:#1a221e;--me:#5aa2ff}
-html{scroll-padding-top:env(safe-area-inset-top,0px);scrollbar-gutter:stable}
-html,body{margin:0;background:var(--bg);color:var(--fg);font-family:"Press Start 2P",monospace}
-main{max-width:1000px;margin:0 auto;padding:12px}
-h1{font-size:.95rem;line-height:1.4;margin:0 0 6px}
-p{margin:0 0 8px;color:var(--mut);font-size:.55rem;line-height:1.7}
-#top{flex-wrap:wrap;position:sticky;top:0;z-index:5;display:flex;justify-content:space-between;align-items:center;gap:8px;background:var(--bg);padding:6px 0;margin:0 0 6px}#hp{display:flex;gap:2px;border:2px solid var(--fg);padding:2px;background:rgba(0,0,0,.35)}#hp i{display:block;width:6px;height:10px}#rt{display:flex;align-items:center;gap:6px}#hud{font-size:.5rem;line-height:1.6;white-space:nowrap}#arm{width:auto;padding:5px 7px;font-size:.7rem;box-shadow:2px 2px 0 var(--fg)}.cb{display:flex;flex-direction:column;gap:6px}#ui .cb button{margin:0}#ui{max-height:34vh;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
-canvas{display:block;width:100%;height:auto;image-rendering:pixelated;border:4px solid var(--fg);touch-action:manipulation}
-button{font:inherit;font-size:.55rem;padding:10px;border:3px solid var(--fg);background:var(--me);color:#fff;box-shadow:3px 3px 0 var(--fg);cursor:pointer;width:100%}
-button:active:not(:disabled){transform:translate(3px,3px);box-shadow:none}
-button:disabled{background:transparent;color:var(--mut);box-shadow:none;border-color:var(--line);cursor:default}
-.card{display:flex;justify-content:space-between;align-items:center;gap:8px;border:3px solid var(--fg);background:var(--card);padding:8px;margin-bottom:8px;box-shadow:3px 3px 0 var(--line)}
-.card small{display:block;color:var(--mut);font-size:.5rem;margin-top:4px}
-.card button{width:auto}
-#ui button{margin-bottom:8px;user-select:none;-webkit-user-select:none}
-#ov{display:none;position:fixed;inset:0;z-index:50;background:rgba(10,14,12,.94);color:#fff;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px;text-align:center;font-size:.7rem;line-height:1.8}#ov button{width:auto;padding:12px 18px}#demo{font-size:.5rem;color:#c98a00;margin:0 0 6px;line-height:1.6}
+:root{color-scheme:light;--bg:#f3f5f2;--card:#fff;--soft:#e8ede9;--line:#dce2dd;--fg:#18201b;--mut:#66716a;--acc:#2f7d57;--on:#fff;--bad:#d23b2f;--warn:#a86a0c;--sh:rgba(0,0,0,.14)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#0f1412;--card:#18201c;--soft:#232d28;--line:#2c3832;--fg:#e8eee9;--mut:#8e9b93;--acc:#43b27e;--on:#07140d;--bad:#ff6b5e;--warn:#e0a93b;--sh:rgba(0,0,0,.5)}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#0f1412;--card:#18201c;--soft:#232d28;--line:#2c3832;--fg:#e8eee9;--mut:#8e9b93;--acc:#43b27e;--on:#07140d;--bad:#ff6b5e;--warn:#e0a93b;--sh:rgba(0,0,0,.5)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font:14px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overflow:hidden}
+#app{position:fixed;inset:0;display:flex;flex-direction:column;max-width:1000px;margin:0 auto;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}
+
+/* верхняя панель */
+#top{flex:none;display:flex;align-items:center;gap:8px;padding:8px 12px}
+#hud{display:flex;flex-wrap:wrap;gap:5px;flex:1;min-width:0}
+.chip{display:inline-flex;align-items:center;gap:4px;padding:4px 9px;border-radius:999px;background:var(--card);border:1px solid var(--line);font-size:12px;font-weight:600;white-space:nowrap}
+.chip.bad{color:var(--bad);border-color:var(--bad)}
+#rt{flex:none;display:flex;align-items:center;gap:8px}
+#hp{position:relative;width:76px;height:28px;border-radius:999px;background:var(--soft);border:1px solid var(--line);overflow:hidden}
+#hp b{position:absolute;inset:0 auto 0 0;background:rgba(224,70,58,.38)}
+#hp span{position:relative;display:flex;align-items:center;justify-content:center;height:100%;font-size:12px;font-weight:700}
+#arm{width:34px;height:34px;padding:0;border-radius:50%;border:1px solid var(--line);background:var(--card);font-size:16px;cursor:pointer;color:var(--fg)}
+#arm:active{background:var(--soft)}
+#demo{flex:none;padding:0 12px 6px;font-size:11px;color:var(--warn)}
+#demo:empty{display:none}
+
+/* карта */
+#stage{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;overflow:hidden}
+canvas{display:block;flex:none;image-rendering:pixelated;touch-action:manipulation}
+
+/* нижняя панель */
+#sheet{flex:none;height:40%;display:flex;flex-direction:column;background:var(--card);border-radius:20px 20px 0 0;box-shadow:0 -8px 28px var(--sh);user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+#sheet.open{height:72%}
+@media(max-height:520px){#sheet{height:56%}#sheet.open{height:86%}}
+#grip{flex:none;width:100%;height:24px;padding:0;border:0;background:none;display:flex;align-items:center;justify-content:center;cursor:pointer}
+#grip span{width:40px;height:4px;border-radius:4px;background:var(--line)}
+#tabs{flex:none;display:flex;gap:6px;padding:0 12px 8px;overflow-x:auto;scrollbar-width:none}
+#tabs::-webkit-scrollbar{display:none}
+.tab{flex:none;border:0;border-radius:999px;padding:8px 14px;background:transparent;color:var(--mut);font:600 13px system-ui,sans-serif;cursor:pointer}
+.tab.on{background:var(--soft);color:var(--fg)}
+#ui{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:0 12px 40px}
+
+/* элементы списка */
+h3{margin:14px 2px 6px;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mut)}
+h3:first-child{margin-top:2px}
+.item{display:flex;align-items:center;gap:12px;padding:11px 12px;margin-bottom:8px;border-radius:14px;background:var(--bg)}
+.item .t{flex:1;min-width:0}
+.item b{font-size:14px;font-weight:650}
+.item small{display:block;margin-top:2px;font-size:12px;line-height:1.35;color:var(--mut)}
+.item.lock{opacity:.55}
+.item.hl{outline:2px solid var(--acc);outline-offset:-2px}
+.cost{display:flex;flex-wrap:wrap;gap:3px 10px;margin-top:6px;font-size:12px;font-weight:600}
+.cost i{font-style:normal}
+.cost i.no{color:var(--bad)}
+.acts{display:flex;flex-direction:column;gap:6px}
+.head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 2px 10px;font-size:16px}
+.btn{flex:none;min-width:92px;min-height:38px;padding:10px 14px;border:0;border-radius:11px;background:var(--acc);color:var(--on);font:650 13px system-ui,sans-serif;cursor:pointer;white-space:nowrap}
+.btn:active:not(:disabled){transform:scale(.97)}
+.btn:disabled{background:var(--soft);color:var(--mut);cursor:default}
+.btn.ghost{background:var(--soft);color:var(--fg)}
+.btn.ghost:disabled{color:var(--mut)}
+.btn.sm{min-width:0;min-height:32px;padding:7px 12px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.stat{padding:10px 12px;border-radius:14px;background:var(--bg)}
+.stat b{display:block;margin:2px 0;font-size:18px;font-weight:700}
+.stat small{display:block;font-size:11px;color:var(--mut)}
+.hint{margin-bottom:8px;padding:11px 12px;border:1px dashed var(--line);border-radius:14px;font-size:13px;color:var(--mut)}
+.help{margin:0;padding-left:18px;font-size:13px;line-height:1.65;color:var(--mut)}
+.help b{color:var(--fg)}
+
+/* загрузка / ошибки */
+#ov{display:none;position:fixed;inset:0;z-index:50;background:rgba(10,14,12,.94);color:#fff;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px;text-align:center;font-size:15px;line-height:1.6}
+#ov button{min-width:0;padding:12px 20px;border:0;border-radius:11px;background:var(--acc);color:var(--on);font:650 14px system-ui,sans-serif;cursor:pointer}
 </style>
 </head>
 <body>
-<main>
-<h1>Деревня</h1>
-<div id="demo"></div>
-<p>Нажмите на землю, чтобы идти. Нажмите на дерево, камень или железную руду, чтобы добывать. Сначала постройте ратушу (она собирает налоги), потом дома, фермы и казармы. Железо нужно для оружия. Ночью идут зомби, оружие бьёт их само. Кнопка снимает броню.</p>
-<div id="top"><span id="hp"></span><span id="rt"><span id="hud"></span><button id="arm" title="Снять / надеть броню"></button></span></div>
-<canvas id="c"></canvas>
-<div id="ui"></div>
-</main>
+<div id="app">
+ <div id="top">
+  <div id="hud"></div>
+  <div id="rt"><span id="hp"></span><button id="arm" aria-label="Снять / надеть броню" title="Снять / надеть броню"></button></div>
+ </div>
+ <div id="demo"></div>
+ <div id="stage"><canvas id="c"></canvas></div>
+ <div id="sheet">
+  <button id="grip" aria-label="Развернуть или свернуть панель"><span></span></button>
+  <div id="tabs"></div>
+  <div id="ui"></div>
+ </div>
+</div>
 <div id="ov"></div>
 <script>
-const cv=document.getElementById('c'),ctx=cv.getContext('2d'),hud=document.getElementById('hud'),ui=document.getElementById('ui');
+const cv=document.getElementById('c'),ctx=cv.getContext('2d'),hud=document.getElementById('hud'),ui=document.getElementById('ui'),stage=document.getElementById('stage');
 const T=16,N=96,dpr=window.devicePixelRatio||1;let W=360,H=400;
 let fz=0,ftm=0;
-function fit(){const aw=Math.min(960,document.querySelector('main').clientWidth-32),z=Math.max(1,Math.floor(aw/330)),nw=Math.round(aw/z),nhh=Math.round(Math.max(240,Math.min(innerHeight*.42,aw*1.1))/z);
+function fit(){const r=stage.getBoundingClientRect(),aw=Math.floor(r.width),ah=Math.floor(r.height);if(aw<50||ah<50)return;
+ const z=Math.max(1,Math.floor(aw/330)),nw=Math.floor(aw/z),nhh=Math.floor(ah/z);
  if(fz&&nw==W&&nhh==H&&z==fz)return;
  W=nw;H=nhh;fz=z;cv.width=W*dpr;cv.height=H*dpr;cv.style.width=W*z+'px';cv.style.height=H*z+'px';
  ctx.setTransform(dpr,0,0,dpr,0,0);ctx.imageSmoothingEnabled=false}
-fit();addEventListener('resize',()=>{clearTimeout(ftm);ftm=setTimeout(fit,150)});
+fit();addEventListener('resize',()=>{clearTimeout(ftm);ftm=setTimeout(fit,80)});
+if(window.ResizeObserver)new ResizeObserver(()=>{clearTimeout(ftm);ftm=setTimeout(fit,40)}).observe(stage);
 const css=getComputedStyle(document.documentElement),dk=()=>css.colorScheme=='dark';
 /*SPR*/
 const mk=(rows,pal,n=16)=>{const c=document.createElement('canvas');c.width=c.height=n;const g=c.getContext('2d');rows.forEach((row,y)=>{for(let x=0;x<n;x++){const h=row[x];if(h&&h!='.'){g.fillStyle=pal[h];g.fillRect(x,y,1,1)}}});return c};
@@ -189,51 +246,110 @@ const addH=(x,y,t,l)=>{HS.push([x,y,t,HS.length,l||1]);for(let a=0;a<2;a++)for(l
 const free=(x,y)=>{if(x<0||y<0||x+1>=N||y+1>=N)return false;for(let a=0;a<2;a++)for(let b=0;b<2;b++){const k=(x+a)+','+(y+b);if(at[k]||hs.has(k))return false}return true};
 const P={x:48*T,y:50*T,tx:48*T,ty:50*T,tg:null,ht:0},inv={wood:0,stone:0,iron:0,food:40,coin:20},cam={x:0,y:0};
 let build=null,gt=0,last=performance.now();
-const BT={hall:{n:'Ратуша',c:[24,16]},house:{n:'Дом',get c(){const k=nh()-1;return[10+3*k,4+2*k]}},forge:{n:'Кузница',c:[20,15]},granary:{n:'Амбар',get c(){const k=ngr();return[16+8*k,10+6*k]}},tower:{n:'Башня',get c(){const k=ntw();return[18+6*k,26+8*k]}},wall:{n:'Стена',c:[0,3]},barracks:{n:'Казармы',c:[28,22]},farm:{n:'Ферма',get c(){const k=nf();return[8+4*k,2+2*k]}}},WL=['#8a4b2a','#7a7f86','#a0693a','#6b4a7a','#5e7f6a','#a88a4a'],RF=['#c0392b','#2f5fa8','#2f8a4a','#d98a1a','#7a4b9a','#c0392b'],
+const BT={hall:{n:'Ратуша',c:[21,13]},house:{n:'Дом',get c(){const k=nh()-1;return[10+3*k,4+2*k]}},forge:{n:'Кузница',c:[20,15]},granary:{n:'Амбар',get c(){const k=ngr();return[16+8*k,10+6*k]}},tower:{n:'Башня',get c(){const k=ntw();return[18+6*k,26+8*k]}},wall:{n:'Стена',c:[0,3]},barracks:{n:'Казармы',c:[28,22]},farm:{n:'Ферма',get c(){const k=nf();return[8+4*k,2+2*k]}}},WL=['#8a4b2a','#7a7f86','#a0693a','#6b4a7a','#5e7f6a','#a88a4a'],RF=['#c0392b','#2f5fa8','#2f8a4a','#d98a1a','#7a4b9a','#c0392b'],
 WPN=[{id:'sword',n:'Меч',c:[5,5,4],d:9},{id:'bow',n:'Лук',c:[8,3,3],d:7}],own={};
 let fo=false,armor=true;const Z=[];let hp=10,MH=10,zt=15,cyc=0,msg='',msgT=0,atk=0,eq=null,sw=0,hurt=0,starve=false;
 const can=c=>inv.wood>=c[0]&&inv.stone>=c[1]&&inv.iron>=(c[2]||0),cs=c=>c[0]+'🪵 '+c[1]+'🪨'+(c[2]?' '+c[2]+'🔩':''),uc=l=>[3*l,2*l,2*l+1],nh=()=>HS.filter(h=>h[2]=='house').length,fb=()=>HS.some(h=>h[2]=='forge');
 const FR=5,HR=6;const nf=()=>HS.filter(h=>h[2]=='farm').length,mf=()=>Math.ceil(nh()/2),fc=l=>[5+3*l,2+2*l];
-const hudU=()=>{hud.textContent='🪵'+inv.wood+' 🪨'+inv.stone+' 🔩'+inv.iron+' 🌾'+(inv.food|0)+(starve?'⚠':'')+' 🪙'+(inv.coin|0)+' 👥'+V.length+'/'+capV()+' '+hapE()+(hap|0)+'%'};
-const farmUI=()=>{const f=HS.filter(h=>h[2]=='farm');if(!f.length)return'';
- let s='<p>Склад: '+(inv.food|0)+'/'+cap()+'. Еда: +'+f.reduce((a,h)=>a+(h[4]||1)*FR,0)+'/мин, жители и армия едят '+(V.length*2+A.length*3)+'/мин</p>';
- f.forEach((h,i)=>{const l=h[4]||1;s+=`<div class="card"><div><b>Ферма ${i+1}</b><small>уровень ${l}/10, +${l*FR}/мин</small></div>${l<10?`<button data-a="fu:${HS.indexOf(h)}" ${can(fc(l))?'':'disabled'}>Улучшить ${cs(fc(l))}</button>`:'<button disabled>Максимум</button>'}</div>`});return s};
+const hudU=()=>{const ch=(e,v,c)=>'<span class="chip'+(c?' bad':'')+'">'+e+' '+v+'</span>';hud.innerHTML=ch('🪵',inv.wood)+ch('🪨',inv.stone)+ch('🔩',inv.iron)+ch('🌾',inv.food|0,starve)+ch('🪙',inv.coin|0)+ch('👥',V.length+'/'+capV())+ch(hapE(),(hap|0)+'%')};
 const A=[],V=[],HC=[8,4,3],maxA=()=>Math.min(12,nh()*2),hb=()=>HS.some(h=>h[2]=='barracks');
 let hap=60,vt=0,arrT=8,fleeT=0,riotT=0,vthr=0,rc=0,uiT=0;
 const hallB=()=>HS.some(h=>h[2]=='hall'),capV=()=>nh()*3,hapE=()=>hap>=70?'😊':hap>=40?'😐':'😠',def=()=>ntw()*6+Math.min(10,Object.keys(WA).length/3)+A.length*2;
 const mkV=(h,arr)=>({h,x:h[0]*T+16,y:h[1]*T+38,tx:h[0]*T+16,ty:h[1]*T+38,w:Math.random()*3,c:V.length%5,fl:false,mv:false,hide:false,arr:!!arr,hp:10,mh:10});
-const vcard=()=>`<div class="card"><div><b>Деревня</b><small>жителей ${V.length}/${capV()}, настроение ${hap|0}% ${hapE()} ${hap>=70?'(+25% к добыче)':hap<=30?'(−20% к добыче)':''}<br>оборона ${def()|0}, налог +${(V.length*hap/100*.75).toFixed(1)}🪙/мин</small></div></div>`;
-const armyUI=()=>`<div class="card"><div><b>Армия</b><small>солдат ${A.length}/${maxA()}, едят 3/мин</small></div><button data-a="hire" ${can(HC)&&A.length<maxA()?'':'disabled'}>Нанять ${cs(HC)}</button></div>`;
-const WA={},SH=[],PR={wood:1,stone:2,iron:4};let tr=false;
+const WA={},SH=[],PR={wood:1,stone:2,iron:4};
 const ngr=()=>HS.filter(h=>h[2]=='granary').length,ntw=()=>HS.filter(h=>h[2]=='tower').length,cap=()=>100+100*ngr();
 const addW=(x,y)=>{WA[x+','+y]={x,y,hp:30};hs.add(x+','+y)},fr1=(x,y)=>x>=0&&y>=0&&x<N&&y<N&&!at[x+','+y]&&!hs.has(x+','+y),wallAt=(x,y)=>WA[(x/T|0)+','+(y/T|0)];
-const tradeUI=()=>{let s='<p>Рынок: продавайте ресурсы за монеты и покупайте еду.</p><button data-a="tclose">Закрыть рынок</button>';
- [['wood','🪵'],['stone','🪨'],['iron','🔩']].forEach(([k,e])=>{const q=k=='iron'?2:5;s+=`<div class="card"><div><b>${e} ${q} шт.</b><small>+${q*PR[k]}🪙 (по ${PR[k]})</small></div><button data-a="sell:${k}" ${inv[k]>=q?'':'disabled'}>Продать</button></div>`});
- return s+`<div class="card"><div><b>🌾 10 еды</b><small>12🪙, склад ${inv.food|0}/${cap()}</small></div><button data-a="buy" ${inv.coin>=12&&inv.food+10<=cap()?'':'disabled'}>Купить</button></div>`};
+let tab='build',sheetOpen=false,lastView='';
+const hpEl=document.getElementById('hp'),sheetEl=document.getElementById('sheet'),tabsEl=document.getElementById('tabs');
+const TABS=[['build','Строить'],['vil','Деревня'],['mkt','Рынок'],['help','Помощь']];
+const cost=c=>{const r=[['🪵',c[0],inv.wood],['🪨',c[1],inv.stone],['🔩',c[2]||0,inv.iron]].filter(x=>x[1]>0);return'<span class="cost">'+r.map(([e,n,h])=>'<i'+(h>=n?'':' class="no"')+'>'+e+' '+n+'</i>').join('')+'</span>'};
+const btn=(a,l,on,g)=>'<button class="btn'+(g?' ghost':'')+'" data-a="'+a+'"'+(on?'':' disabled')+'>'+l+'</button>';
+const item=(t,s,c,b,x)=>'<div class="item'+(x?' '+x:'')+'"><div class="t"><b>'+t+'</b>'+(s?'<small>'+s+'</small>':'')+(c||'')+'</div>'+(b||'')+'</div>';
+const lockI=(t,w)=>item(t,'🔒 '+w,'','','lock');
+const hint=t=>'<div class="hint">'+t+'</div>';
+const head=t=>'<h3>'+t+'</h3>';
+const stat=(l,v,s)=>'<div class="stat"><small>'+l+'</small><b>'+v+'</b>'+(s?'<small>'+s+'</small>':'')+'</div>';
+
+function vBuild(){
+ if(build){const w=build=='wall';return item(BT[build].n,w?'Нажимайте на карту: стена стоит 3🪨 за клетку':'Нажмите на свободное место на карте','',btn('cancel',w?'Готово':'Отмена',true,true),'hl')}
+ if(!hallB())return head('Начало')+item('Ратуша','Собирает налоги с жителей. Пока её нет, другие здания недоступны.',cost(BT.hall.c),btn('b:hall','Построить',can(BT.hall.c)));
+ const n=nh();let h=head('Жильё и еда');
+ h+=item('Дом','Вмещает 3 жителей · '+n+'/8',cost(BT.house.c),btn('b:house',n<8?'Построить':'Макс.',can(BT.house.c)&&n<8));
+ h+=item('Ферма','Даёт еду · '+nf()+'/'+mf()+' (лимит растёт с домами)',cost(BT.farm.c),btn('b:farm',nf()<mf()?'Построить':'Лимит',can(BT.farm.c)&&nf()<mf()));
+ h+=n>=2?item('Амбар','Склад еды +100 · '+ngr()+'/3',cost(BT.granary.c),btn('b:granary',ngr()<3?'Построить':'Макс.',can(BT.granary.c)&&ngr()<3)):lockI('Амбар','после 2-го дома');
+ h+=head('Развитие');
+ if(fb())h+=hint('⚒ Кузница построена. Подойдите к ней и нажмите на неё, чтобы делать оружие.');
+ else h+=n>=2?item('Кузница','Оружие: меч и лук',cost(BT.forge.c),btn('b:forge','Построить',can(BT.forge.c))):lockI('Кузница','после 2-го дома');
+ if(!hb())h+=n>=3?item('Казармы','Позволяют нанимать солдат',cost(BT.barracks.c),btn('b:barracks','Построить',can(BT.barracks.c))):lockI('Казармы','после 3-го дома');
+ h+=head('Оборона');
+ h+=n>=3?item('Башня','Стреляет по зомби · '+ntw()+'/4',cost(BT.tower.c),btn('b:tower',ntw()<4?'Построить':'Макс.',can(BT.tower.c)&&ntw()<4)):lockI('Башня','после 3-го дома');
+ h+=n>=2?item('Стены','Зомби ломают их, пока не добрались до вас','<span class="cost"><i>🪨 3 за клетку</i></span>',btn('b:wall','Строить',can(BT.wall.c))):lockI('Стены','после 2-го дома');
+ return h}
+
+function vVil(){
+ if(!hallB())return hint('Сначала постройте ратушу: появятся налоги, настроение жителей и рынок.');
+ const f=HS.filter(x=>x[2]=='farm'),pr=f.reduce((a,x)=>a+(x[4]||1)*FR,0),eat=V.length*2+A.length*3;
+ let h='<div class="stats">'
+  +stat('Жители',V.length+' / '+capV(),'')
+  +stat('Настроение',hapE()+' '+(hap|0)+'%',hap>=70?'+25% к добыче':hap<=30?'−20% к добыче':'обычная добыча')
+  +stat('Еда',(inv.food|0)+' / '+cap(),'+'+pr+' / −'+eat+' в мин')
+  +stat('Налог','+'+(V.length*hap/100*.75).toFixed(1)+' 🪙','в минуту')
+  +stat('Оборона',def()|0,'башни, стены, армия')
+  +stat('Армия',A.length+' / '+maxA(),'едят 3 в мин')+'</div>';
+ if(f.length){h+=head('Фермы');f.forEach((fm,i)=>{const l=fm[4]||1;h+=item('Ферма '+(i+1),'Уровень '+l+'/10 · +'+(l*FR)+' еды в мин',l<10?cost(fc(l)):'',l<10?btn('fu:'+HS.indexOf(fm),'Улучшить',can(fc(l))):btn('','Максимум',false))})}
+ h+=head('Армия');
+ h+=hb()?item('Солдат','Защищают деревню · '+A.length+'/'+maxA(),cost(HC),btn('hire','Нанять',can(HC)&&A.length<maxA())):hint('Постройте казармы, чтобы нанимать солдат.');
+ return h}
+
+function vMkt(){
+ if(!hallB())return hint('Рынок откроется после постройки ратуши.');
+ let h=head('Продать');
+ [['wood','🪵'],['stone','🪨'],['iron','🔩']].forEach(([k,e])=>{const q=k=='iron'?2:5;h+=item(e+' '+q+' шт.','+'+(q*PR[k])+' 🪙 (по '+PR[k]+') · у вас '+inv[k],'',btn('sell:'+k,'Продать',inv[k]>=q))});
+ h+=head('Купить');
+ h+=item('🌾 10 еды','12 🪙 · склад '+(inv.food|0)+'/'+cap(),'',btn('buy','Купить',inv.coin>=12&&inv.food+10<=cap()));
+ return h}
+
+function vHelp(){
+ return head('Как играть')+'<ul class="help">'
+  +'<li><b>Идти:</b> нажмите на землю.</li>'
+  +'<li><b>Добывать:</b> нажмите на дерево, камень или железную руду.</li>'
+  +'<li><b>Строить:</b> сначала ратуша (налоги), затем дома, фермы и казармы.</li>'
+  +'<li><b>Оружие:</b> железо нужно для кузницы. Подойдите к ней и нажмите на неё.</li>'
+  +'<li><b>Ночью</b> идут зомби, оружие бьёт их само. Жители прячутся в домах и там в безопасности.</li>'
+  +'<li><b>Зомби</b> нападают на ближайшую цель: стену, жителя, солдата или вас.</li>'
+  +'<li>Кнопка 🍄 / 🛡️ вверху снимает и надевает броню.</li>'
+  +'<li>Потяните полоску над вкладками или нажмите на неё, чтобы развернуть панель.</li></ul>'}
+
+function vForge(){
+ let h='<div class="head"><b>⚒ Кузница</b><button class="btn ghost sm" data-a="close">Закрыть</button></div>';
+ WPN.forEach(w=>{const lv=own[w.id],dm=l=>Math.round(w.d*(1+.2*(l-1))),c=lv?uc(lv):w.c,kind=w.id=='bow'?'дальний бой':'ближний бой';
+  const sub=(lv?'Уровень '+lv+'/5 · урон '+dm(lv)+(lv<5?' → '+dm(lv+1):''):'Урон '+dm(1))+' · '+kind;
+  const main=!lv?btn('mk:'+w.id,'Создать',can(w.c)):lv<5?btn('up:'+w.id,'Улучшить',can(uc(lv))):btn('','Максимум',false);
+  const eqb=lv?btn('eq:'+w.id,eq==w.id?'В руке':'Взять',eq!=w.id,true):'';
+  h+='<div class="item"><div class="t"><b>'+w.n+'</b><small>'+sub+'</small>'+(lv<5?cost(c):'')+'</div><div class="acts">'+main+eqb+'</div></div>'});
+ return h}
+
 function render(){
  hudU();document.getElementById('arm').textContent=armor?'🍄':'🛡️';
- if(tr){ui.innerHTML=tradeUI();return}
- let h='';
- if(build)h+='<button data-a="cancel">Отмена: нажмите на свободное место</button>';
- else if(!hallB()){h+=`<button data-a="b:hall" ${can(BT.hall.c)?'':'disabled'}>Построить ратушу ${cs(BT.hall.c)}</button><p>Ратуша собирает налоги с жителей. Пока её нет, другие здания недоступны.</p>`}
- else{h+=vcard()+`<button data-a="b:house" ${can(BT.house.c)&&nh()<8?'':'disabled'}>Построить дом ${cs(BT.house.c)} (${nh()}/8)</button>`;
-  if(nh()>=1)h+=`<button data-a="b:farm" ${can(BT.farm.c)&&nf()<mf()?'':'disabled'}>Построить ферму ${cs(BT.farm.c)} (${nf()}/${mf()})</button>`;
-  if(!fb()){if(nh()>=2)h+=`<button data-a="b:forge" ${can(BT.forge.c)?'':'disabled'}>Построить кузницу ${cs(BT.forge.c)}</button>`;else h+='<p>Кузница откроется после второго дома.</p>'}
-  if(nh()>=3&&!hb())h+=`<button data-a="b:barracks" ${can(BT.barracks.c)?'':'disabled'}>Построить казармы ${cs(BT.barracks.c)}</button>`;
-  if(nh()>=2)h+=`<button data-a="b:granary" ${can(BT.granary.c)&&ngr()<3?'':'disabled'}>Построить амбар ${cs(BT.granary.c)} (${ngr()}/3)</button>`;
-  if(nh()>=3)h+=`<button data-a="b:tower" ${can(BT.tower.c)&&ntw()<4?'':'disabled'}>Построить башню ${cs(BT.tower.c)} (${ntw()}/4)</button>`;
-  if(nh()>=2)h+=`<button data-a="b:wall" ${can(BT.wall.c)?'':'disabled'}>Строить стены (3🪨 за клетку)</button>`;
-  h+='<button data-a="topen">Рынок 🪙</button>'}
- if(!build&&!fo)h+=farmUI();
- if(!build&&!fo&&hb())h+=armyUI();
- if(fo){h+='<p><b>Кузница</b>: нажмите, чтобы создать или улучшить.</p><button data-a="close">Закрыть кузницу</button>';
-  WPN.forEach(w=>{const lv=own[w.id],dm=l=>Math.round(w.d*(1+.2*(l-1)));
-   const b=!lv?`<button data-a="mk:${w.id}" ${can(w.c)?'':'disabled'}>Создать ${cs(w.c)}</button>`:lv<5?`<button data-a="up:${w.id}" ${can(uc(lv))?'':'disabled'}>Улучшить ${cs(uc(lv))}</button>`:'<button disabled>Максимум</button>';
-   h+=`<div class="card"><div><b>${w.n}</b><small>${lv?'уровень '+lv+', урон '+dm(lv):'урон '+dm(1)}</small></div><div class="cb">${b}${lv?`<button data-a="eq:${w.id}" ${eq==w.id?'disabled':''}>${eq==w.id?'В руке':'Взять'}</button>`:''}</div></div>`});
-  }
- ui.innerHTML=h}
-ui.addEventListener('click',e=>{const a=e.target.dataset.a;if(!a||e.target.disabled)return;const[k,id]=a.split(':');
- if(k=='armor'){armor=!armor;P.fx=.4}if(k=='fu'){const f=HS[+id];if(f&&f[2]=='farm'&&(f[4]||1)<10){const c=fc(f[4]||1);if(can(c)){pay(c);f[4]=(f[4]||1)+1}}}if(k=='sell'){const q=id=='iron'?2:5;if(inv[id]>=q){inv[id]-=q;inv.coin+=q*PR[id]}}if(k=='buy'&&inv.coin>=12&&inv.food+10<=cap()){inv.coin-=12;inv.food+=10}if(k=='topen')tr=true;if(k=='tclose')tr=false;if(k=='hire'&&hb()&&A.length<maxA()&&can(HC)){pay(HC);A.push(newSoldier())}if(k=='eq'&&own[id])eq=id;if(k=='b'&&BT[id]&&(id=='hall'?!hallB():hallB()))build=id;if(k=='cancel')build=null;if(k=='close')fo=false;
+ const cur=fo?'forge':tab;
+ tabsEl.innerHTML=(fo?'<button class="tab on" data-t="forge">⚒ Кузница</button>':'')+TABS.map(([k,n])=>'<button class="tab'+(!fo&&k==tab?' on':'')+'" data-t="'+k+'">'+n+'</button>').join('');
+ sheetEl.classList.toggle('open',sheetOpen);
+ const st=ui.scrollTop,key=cur+(build?'!'+build:'');
+ ui.innerHTML=fo?vForge():tab=='build'?vBuild():tab=='vil'?vVil():tab=='mkt'?vMkt():vHelp();
+ ui.scrollTop=key==lastView?st:0;lastView=key}
+
+tabsEl.addEventListener('click',e=>{const b=e.target.closest('[data-t]');if(!b||b.dataset.t=='forge')return;fo=false;build=null;tab=b.dataset.t;render()});
+document.getElementById('grip').addEventListener('click',()=>{sheetOpen=!sheetOpen;render()});
+
+ui.addEventListener('click',e=>{const el=e.target.closest('[data-a]');if(!el||el.disabled)return;const a=el.dataset.a;if(!a)return;const[k,id]=a.split(':');
+ if(k=='fu'){const f=HS[+id];if(f&&f[2]=='farm'&&(f[4]||1)<10){const c=fc(f[4]||1);if(can(c)){pay(c);f[4]=(f[4]||1)+1}}}
+ if(k=='sell'){const q=id=='iron'?2:5;if(inv[id]>=q){inv[id]-=q;inv.coin+=q*PR[id]}}
+ if(k=='buy'&&inv.coin>=12&&inv.food+10<=cap()){inv.coin-=12;inv.food+=10}
+ if(k=='hire'&&hb()&&A.length<maxA()&&can(HC)){pay(HC);A.push(newSoldier())}
+ if(k=='eq'&&own[id])eq=id;
+ if(k=='b'&&BT[id]&&(id=='hall'?!hallB():hallB())){build=id;sheetOpen=false}
+ if(k=='cancel')build=null;
+ if(k=='close')fo=false;
  if(k=='mk'){const w=WPN.find(x=>x.id==id);if(!own[id]&&can(w.c)){pay(w.c);own[id]=1;eq=id}}
  if(k=='up'&&own[id]&&own[id]<5){const c=uc(own[id]);if(can(c)){pay(c);own[id]++}}
  render()});
@@ -288,14 +404,18 @@ function tick(dt){
   if(Z.length<(night?6:2)){const a=Math.random()*6.283,d=170+Math.random()*60,zh=30+5*Math.min(8,cyc/180|0),cl=v=>Math.max(8,Math.min(N*T-8,v));
    Z.push({x:cl(P.x+Math.cos(a)*d),y:cl(P.y+Math.sin(a)*d),hp:zh,mh:zh,ct:0,fl:false,n:night})}}
  let near=null,nd=1e9;
- for(let i=Z.length-1;i>=0;i--){const z=Z[i],dp=Math.hypot(P.x-z.x,P.y-z.y);let T2=null,td=1e9;
-  A.forEach(a=>{const d=Math.hypot(a.x-z.x,a.y-z.y);if(d<td){td=d;T2=a}});
-  if(!T2)V.forEach(v=>{const d=Math.hypot(v.x-z.x,v.y-z.y);if(d<td){td=d;T2=v}});
-  const pl=!T2,dx=(pl?P.x:T2.x)-z.x,dy=(pl?P.y:T2.y)-z.y,m=Math.hypot(dx,dy);
+ for(let i=Z.length-1;i>=0;i--){const z=Z[i],dp=Math.hypot(P.x-z.x,P.y-z.y);
+  /* ближайшая цель: игрок, солдат, житель (не спрятанный в доме) или стена */
+  let T2=P,tt='p',td=dp;
+  for(const a of A){const d=Math.hypot(a.x-z.x,a.y-z.y);if(d<td){td=d;T2=a;tt='a'}}
+  for(const v of V){if(v.hide)continue;const d=Math.hypot(v.x-z.x,v.y-z.y);if(d<td){td=d;T2=v;tt='v'}}
+  for(const k in WA){const w=WA[k];if(w.hp<=0)continue;const d=Math.hypot(w.x*T+8-z.x,w.y*T+8-z.y)-8;if(d<td){td=d;T2=w;tt='w'}}
+  const gx=tt=='w'?T2.x*T+8:T2.x,gy=tt=='w'?T2.y*T+8:T2.y,dx=gx-z.x,dy=gy-z.y,m=Math.hypot(dx,dy),stop=tt=='w'?15:12,rg=tt=='w'?16:13;
   if(!night&&z.n)z.hp-=2*dt;
   if(z.hp<=0){Z.splice(i,1);continue}
-  if(m>12){const s=Math.min(m,(night?38:29)*dt),nx=z.x+dx/m*s,ny=z.y+dy/m*s,wd=wallAt(nx,ny);if(!wd){z.x=nx;z.y=ny}else{if(!wallAt(nx,z.y))z.x=nx;else if(!wallAt(z.x,ny))z.y=ny;wd.hp-=dt*2}z.fl=dx<0}
-  z.ct-=dt;if(m<=13&&z.ct<=0){z.ct=1;if(pl){hp-=armor?2:3;hurt=.3}else{T2.hp-=3;if(T2.h)vthr+=1}}
+  if(Math.abs(dx)>1)z.fl=dx<0;
+  if(m>stop){const s=Math.min(m,(night?38:29)*dt),nx=z.x+dx/m*s,ny=z.y+dy/m*s,wd=wallAt(nx,ny);if(!wd){z.x=nx;z.y=ny}else{if(!wallAt(nx,z.y))z.x=nx;else if(!wallAt(z.x,ny))z.y=ny;wd.hp-=dt*2}}
+  z.ct-=dt;if(m<=rg&&z.ct<=0){z.ct=1;if(tt=='p'){hp-=armor?2:3;hurt=.3}else if(tt=='w')T2.hp-=2;else{T2.hp-=3;if(tt=='v')vthr+=1}}
   if(dp<nd){nd=dp;near=z}}
  const w=eq&&own[eq]?WPN.find(x=>x.id==eq):null,rg=w&&w.id=='bow'?58:26;
  if(near&&nd<=rg&&atk<=0){atk=w&&w.id=='axe'?.9:.6;sw=.18;P.fl=near.x<P.x;near.hp-=w?wdm(w.id):3;const k=nd||1;near.x+=(near.x-P.x)/k*4;near.y+=(near.y-P.y)/k*4}
@@ -310,7 +430,7 @@ function update(dt){
   if(P.ht<=0){P.ht=.6/(hap>=70?1.25:hap<=30?.8:1);tg.hit=.12;if(--tg.hp<=0){inv[D[tg.t].g]+=D[tg.t].n;tg.dead=true;mmD=true;tg.back=gt+45;P.tg=null;render()}}return}
  const dx=P.tx-P.x,dy=P.ty-P.y,m=Math.hypot(dx,dy);P.mv=m>2;if(m>2&&Math.abs(dx)>1)P.fl=dx<0;
  if(m>2){const s=Math.min(m,80*dt*(starve?.7:1));P.x+=dx/m*s;P.y+=dy/m*s}
- if(P.of&&Math.hypot(P.tx-P.x,P.ty-P.y)<=3){P.of=false;fo=true;render()}
+ if(P.of&&Math.hypot(P.tx-P.x,P.ty-P.y)<=3){P.of=false;fo=true;sheetOpen=true;render()}
  P.x=Math.max(8,Math.min(N*T-8,P.x));P.y=Math.max(8,Math.min(N*T-8,P.y))}
 const DK='#1d2420';
 function house(sx,sy,q){
@@ -400,7 +520,7 @@ function draw(){
   R('rgba(0,0,0,.2)',sx+2,sy+13,12,3);
   ctx.drawImage(S[o.t],sx,sy);
   if(P.tg===o&&o.hp<D[o.t].h){R('#1d2420',sx,sy-6,16,3);R('#ffd45c',sx,sy-6,16*o.hp/D[o.t].h,3)}});
- Object.values(WA).forEach(w=>{const sx=w.x*T-cam.x,sy=w.y*T-cam.y;if(sx<-T||sy<-T||sx>W||sy>H)return;ctx.drawImage(S.wall,sx,sy);if(w.hp<18){R('#1d2420',sx+4,sy+6,1,6);R('#1d2420',sx+5,sy+11,3,1);R('#1d2420',sx+10,sy+7,1,5)}});
+ Object.values(WA).forEach(w=>{const sx=w.x*T-cam.x,sy=w.y*T-cam.y;if(sx<-T||sy<-T||sx>W||sy>H)return;ctx.drawImage(S.wall,sx,sy);if(w.hp<30){R('#1d2420',sx+2,sy-3,12,3);R('#e0463a',sx+3,sy-2,10*Math.max(0,w.hp)/30,1)}if(w.hp<18){R('#1d2420',sx+4,sy+6,1,6);R('#1d2420',sx+5,sy+11,3,1);R('#1d2420',sx+10,sy+7,1,5)}});
  HS.forEach(([x,y,t,i,l])=>{const sx=x*T-cam.x,sy=y*T-cam.y;if(t=='forge')forge(sx,sy);else if(t=='farm')farm(sx,sy,l||1);else if(t=='barracks')barracks(sx,sy);else if(t=='granary')granary(sx,sy);else if(t=='tower')tower(sx,sy);else if(t=='hall')hall(sx,sy);else house(sx,sy,i%6)});
  V.forEach(v=>{if(v.hide)return;const vx=Math.round(v.x-cam.x),vy=Math.round(v.y-cam.y);if(vx<-16||vy<-16||vx>W+16||vy>H+16)return;
   R('rgba(0,0,0,.3)',vx-5,vy+6,10,3);ctx.drawImage((v.fl?S.vL:S.v)[v.c],vx-8,vy-8+(v.mv&&(gt*8|0)%2?-1:0));if(v.hp<v.mh){R('#1d2420',vx-6,vy-12,12,3);R('#e0463a',vx-6,vy-12,12*Math.max(0,v.hp)/v.mh,3)}});
@@ -433,7 +553,7 @@ function draw(){
  if(mmD)buildMM();ctx.drawImage(MM,W-54,6);
  HS.forEach(([x,y,t])=>R(t=='forge'?'#ff9a2e':t=='farm'?'#8fdc72':t=='barracks'?'#e0463a':t=='granary'?'#e8c24a':t=='tower'?'#c4cad2':t=='hall'?'#ffffff':'#ffd45c',W-54+x/2,6+y/2,3,3));
  A.forEach(a=>R('#4aa6ff',W-54+a.x/T/2-1,6+a.y/T/2-1,2,2));Z.forEach(z=>R('#ff3b3b',W-54+z.x/T/2-1,6+z.y/T/2-1,2,2));R('#fff',W-54+P.x/T/2-1,6+P.y/T/2-1,3,3)}
-let lh=-1,ec=0;function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;try{update(dt);draw();if(hp!==lh){lh=hp;document.getElementById('hp').innerHTML=Array.from({length:MH},(_,i)=>'<i style="background:'+(i<hp?'#e0463a':'#4a2020')+'"></i>').join('')}}catch(e){if(ec++<5)console.error(e)}requestAnimationFrame(loop)}
+let lh=-1,ec=0;function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;try{update(dt);draw();if(hp!==lh){lh=hp;hpEl.innerHTML='<b style="width:'+Math.max(0,hp)/MH*100+'%"></b><span>❤ '+hp+'/'+MH+'</span>'}}catch(e){if(ec++<5)console.error(e)}requestAnimationFrame(loop)}
 const API='https://cjqjesncvltqqzqbsblk.supabase.co/functions/v1/game',SID=Math.random().toString(36).slice(2)+Date.now().toString(36);
 let locked=false,saving=false,lastJ='',demo=false,started=false;
 const ov=document.getElementById('ov'),initData=()=>(window.Telegram&&Telegram.WebApp&&Telegram.WebApp.initData)||'';
@@ -464,7 +584,7 @@ async function boot(){
  if(!started){started=true;render();requestAnimationFrame(loop);
   if(!demo){setInterval(()=>save(),15000);addEventListener('pagehide',()=>save(true));document.addEventListener('visibilitychange',()=>{if(document.hidden)save(true)})}}}
 document.getElementById('arm').addEventListener('pointerdown',e=>{e.preventDefault();armor=!armor;P.fx=.4;render()});boot();
-const tgInit=()=>{try{Telegram.WebApp.ready();Telegram.WebApp.expand()}catch(e){}try{if(!localStorage.getItem('wa1')){localStorage.setItem('wa1','1');Telegram.WebApp.requestWriteAccess&&Telegram.WebApp.requestWriteAccess()}}catch(e){}};addEventListener('load',tgInit);tgInit();
+const tgInit=()=>{try{Telegram.WebApp.ready();Telegram.WebApp.expand()}catch(e){}try{Telegram.WebApp.disableVerticalSwipes&&Telegram.WebApp.disableVerticalSwipes()}catch(e){}try{if(!localStorage.getItem('wa1')){localStorage.setItem('wa1','1');Telegram.WebApp.requestWriteAccess&&Telegram.WebApp.requestWriteAccess()}}catch(e){}};addEventListener('load',tgInit);tgInit();
 </script>
 </body>
 </html>
