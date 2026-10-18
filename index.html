@@ -464,7 +464,7 @@ async function boot(){
  if(!started){started=true;render();requestAnimationFrame(loop);
   if(!demo){setInterval(()=>save(),15000);addEventListener('pagehide',()=>save(true));document.addEventListener('visibilitychange',()=>{if(document.hidden)save(true)})}}}
 document.getElementById('arm').addEventListener('pointerdown',e=>{e.preventDefault();armor=!armor;P.fx=.4;render()});boot();
-const tgInit=()=>{try{Telegram.WebApp.ready();Telegram.WebApp.expand()}catch(e){}};addEventListener('load',tgInit);tgInit();
+const tgInit=()=>{try{Telegram.WebApp.ready();Telegram.WebApp.expand()}catch(e){}try{if(!localStorage.getItem('wa1')){localStorage.setItem('wa1','1');Telegram.WebApp.requestWriteAccess&&Telegram.WebApp.requestWriteAccess()}}catch(e){}};addEventListener('load',tgInit);tgInit();
 </script>
 </body>
 </html>
