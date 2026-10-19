@@ -289,21 +289,18 @@ for(let y=0;y<NH;y++)for(let x=0;x<NW;x++){if(!LAND[y*NW+x])continue;const b=BIO
 O.sort((a,b)=>a.y-b.y);
 const WMAP=document.createElement('canvas');WMAP.width=NW;WMAP.height=NH;
 {const g=WMAP.getContext('2d'),C=['#79b765','#c3bd72','#e0cd8e','#d4dbd0','#4d8f52','#4aa05c','#9b978c','#f1f5f7'];for(let y=0;y<NH;y++)for(let x=0;x<NW;x++){g.fillStyle=LAND[y*NW+x]?C[BIO[y*NW+x]]:'#2d5f9a';g.fillRect(x,y,1,1)}}
-let bigMap=false,HOME={x:0,y:0,i:0},homeSet=false;const NPCT=new Set(),NPC=[],WORLD={players:[]};
-const OTH=()=>WORLD.players.length?WORLD.players:NPC; /* WORLD.players: сюда придут игроки с сервера: {id,name,x,y} (x,y в клетках) */
+let bigMap=false,HOME={x:0,y:0,i:0},homeSet=false;const WORLD={players:[]};
+const OTH=()=>WORLD.players; /* WORLD.players: сюда придут игроки с сервера: {id,name,x,y} (x,y в клетках) */
 const PLNAMES=['Ярик','Мира','Тимур','Алия','Бао','Ли Вэй','Рави','Ханна','Ян','Сакура','Дмитрий','Эмма','Хассан','Нино','Ким'];
 const hstr=s=>{let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0};
 const homeFor=k=>hstr(String(k))%SP.length;
 const hs=new Set(),HS=[];
-const addH=(x,y,t,l)=>{HS.push([x,y,t,HS.length,l||1]);for(let a=0;a<2;a++)for(let b=0;b<2;b++)hs.add((x+a)+','+(y+b))};
-function setHome(i){homeSet=true;const s=SP[i];HOME={x:s.x,y:s.y,i};HS.length=0;hs.clear();NPCT.clear();NPC.length=0;
- const ids=SP.map((_,k)=>k).filter(k=>k!=i).sort((a,b)=>hh(a,7,3)-hh(b,7,3));
- ids.slice(0,14).forEach((k,n)=>{const t=SP[k];NPC.push({id:'npc'+k,name:PLNAMES[n%PLNAMES.length],x:t.x,y:t.y,q:n,npc:true});[[0,0],[3,1],[-3,1]].forEach(([dx,dy])=>{for(let a=0;a<2;a++)for(let b=0;b<2;b++){const key=(t.x+dx+a)+','+(t.y+dy+b);NPCT.add(key);hs.add(key)}})});
- addH(s.x,s.y,'house');P.x=P.tx=s.x*T+16;P.y=P.ty=(s.y+3)*T;P.tg=null}
+const addH=(x,y,t,l)=>{HS.push([x,y,t,HS.length,l||1]);for(let a=0;a<2;a++)for(let b=0;b<2;b++){hs.add((x+a)+','+(y+b));rmO((x+a)+','+(y+b))}};
+function setHome(i){homeSet=true;const s=SP[i];HOME={x:s.x,y:s.y,i};HS.length=0;hs.clear();addH(s.x,s.y,'house');P.x=P.tx=s.x*T+16;P.y=P.ty=(s.y+3)*T;P.tg=null}
 const free=(x,y)=>{if(x<0||y<0||x+1>=NW||y+1>=NH)return false;for(let a=0;a<2;a++)for(let b=0;b<2;b++){const k=(x+a)+','+(y+b);if(at[k]||hs.has(k)||!isLand(x+a,y+b))return false}return true};
 const P={x:48*T,y:50*T,tx:48*T,ty:50*T,tg:null,ht:0},inv={wood:0,stone:0,iron:0,food:40,coin:20},cam={x:0,y:0};
 let build=null,gt=0,last=performance.now();
-const BT={hall:{n:'Ратуша',c:[21,13]},house:{n:'Дом',get c(){const k=nh()-1;return[10+3*k,4+2*k]}},forge:{n:'Кузница',c:[20,15]},granary:{n:'Амбар',get c(){const k=ngr();return[16+8*k,10+6*k]}},tower:{n:'Башня',get c(){const k=ntw();return[18+6*k,26+8*k]}},wall:{n:'Стена',c:[0,3]},demo:{n:'Снос',c:[0,0]},gate:{n:'Ворота',c:[6,0]},barracks:{n:'Казармы',c:[28,22]},farm:{n:'Ферма',get c(){const k=nf();return[8+4*k,2+2*k]}}},WL=['#8a4b2a','#7a7f86','#a0693a','#6b4a7a','#5e7f6a','#a88a4a'],RF=['#c0392b','#2f5fa8','#2f8a4a','#d98a1a','#7a4b9a','#c0392b'],
+const BT={hall:{n:'Ратуша',c:[21,13]},house:{n:'Дом',get c(){const k=nh()-1;return[10+3*k,4+2*k]}},forge:{n:'Кузница',c:[20,15]},granary:{n:'Амбар',get c(){const k=ngr();return[16+8*k,10+6*k]}},tower:{n:'Башня',get c(){const k=ntw();return[18+6*k,26+8*k]}},wall:{n:'Стена',c:[0,3]},demo:{n:'Снос',c:[0,0]},bridge:{n:'Мост',c:[2,0]},gate:{n:'Ворота',c:[6,0]},barracks:{n:'Казармы',c:[28,22]},farm:{n:'Ферма',get c(){const k=nf();return[8+4*k,2+2*k]}}},WL=['#8a4b2a','#7a7f86','#a0693a','#6b4a7a','#5e7f6a','#a88a4a'],RF=['#c0392b','#2f5fa8','#2f8a4a','#d98a1a','#7a4b9a','#c0392b'],
 WPN=[{id:'sword',n:'Меч',c:[5,5,4],d:9},{id:'bow',n:'Лук',c:[8,3,3],d:7}],own={};
 let fo=false,armor=true;const Z=[];let hp=10,MH=10,zt=15,cyc=0,msg='',msgT=0,atk=0,eq=null,sw=0,hurt=0,starve=false;
 const can=c=>inv.wood>=c[0]&&inv.stone>=c[1]&&inv.iron>=(c[2]||0),cs=c=>c[0]+'🪵 '+c[1]+'🪨'+(c[2]?' '+c[2]+'🔩':''),uc=l=>[3*l,2*l,2*l+1],nh=()=>HS.filter(h=>h[2]=='house').length,fb=()=>HS.some(h=>h[2]=='forge');
@@ -316,6 +313,13 @@ const mkV=(h,arr)=>({h,x:h[0]*T+16,y:h[1]*T+38,tx:h[0]*T+16,ty:h[1]*T+38,w:Math.
 const WA={},SH=[],PR={wood:1,stone:2,iron:4};
 const ngr=()=>HS.filter(h=>h[2]=='granary').length,ntw=()=>HS.filter(h=>h[2]=='tower').length,cap=()=>100+100*ngr();
 const addW=(x,y,g)=>{WA[x+','+y]={x,y,hp:g?36:30,mx:g?36:30,g:!!g,open:false,ot:0};hs.add(x+','+y);wgT=0},fr1=(x,y)=>x>=0&&y>=0&&x<NW&&y<NH&&isLand(x,y)&&!at[x+','+y]&&!hs.has(x+','+y),wallAt=(x,y)=>WA[(x/T|0)+','+(y/T|0)];
+const BR={};
+const walk=(x,y)=>isLand(x,y)||!!BR[x+','+y];
+const rmO=k=>{const o=at[k];if(o){delete at[k];const i=O.indexOf(o);if(i>=0)O.splice(i,1);if(P.tg===o)P.tg=null}};
+const canBr=(x,y)=>x>0&&y>0&&x<NW-1&&y<NH-1&&!isLand(x,y)&&!BR[x+','+y]&&!hs.has(x+','+y)&&[[1,0],[-1,0],[0,1],[0,-1]].some(([a,b])=>walk(x+a,y+b));
+const addBr=(x,y)=>{BR[x+','+y]={x,y};WAT[y*NW+x]=0;wgT=0};
+const delBr=(x,y)=>{delete BR[x+','+y];WAT[y*NW+x]=1;wgT=0};
+const onTile=(x,y)=>[P].concat(A,V,Z).some(u=>(u.x/T|0)==x&&(u.y/T|0)==y);
 let tab='build',sheetOpen=false,lastView='';
 const hpEl=document.getElementById('hp'),sheetEl=document.getElementById('sheet'),tabsEl=document.getElementById('tabs');
 const TABS=[['build','Строить'],['vil','Деревня'],['mkt','Рынок'],['help','Помощь']];
@@ -328,7 +332,7 @@ const head=t=>'<h3>'+t+'</h3>';
 const stat=(l,v,s)=>'<div class="stat"><small>'+l+'</small><b>'+v+'</b>'+(s?'<small>'+s+'</small>':'')+'</div>';
 
 function vBuild(){
- if(build){const w=build=='wall'||build=='gate'||build=='demo';return item(BT[build].n,build=='wall'?'Нажимайте на карту: стена стоит 3🪨 за клетку':build=='gate'?'Нажимайте на карту: ворота стоят 6🪵 за клетку. Нажмите на стену, чтобы заменить её воротами':build=='demo'?'Нажмите на здание или стену: снос стоит 1 🪙':'Нажмите на свободное место на карте','',btn('cancel',w?'Готово':'Отмена',true,true),'hl')}
+ if(build){const w=build=='wall'||build=='gate'||build=='demo'||build=='bridge';return item(BT[build].n,build=='wall'?'Нажимайте на карту: стена стоит 3🪨 за клетку':build=='gate'?'Нажимайте на карту: ворота стоят 6🪵 за клетку. Нажмите на стену, чтобы заменить её воротами':build=='demo'?'Нажмите на здание, стену, мост, пень или яму: снос стоит 1 🪙':build=='bridge'?'Нажимайте на воду рядом с берегом или мостом: 2🪵 за клетку':'Нажмите на свободное место на карте','',btn('cancel',w?'Готово':'Отмена',true,true),'hl')}
  if(!hallB())return head('Начало')+item('Ратуша','Собирает налоги с жителей. Пока её нет, другие здания недоступны.',cost(BT.hall.c),btn('b:hall','Построить',can(BT.hall.c)));
  const n=nh();let h=head('Жильё и еда');
  h+=item('Дом','Вмещает 3 жителей · '+n+'/8',cost(BT.house.c),btn('b:house',n<8?'Построить':'Макс.',can(BT.house.c)&&n<8));
@@ -342,7 +346,7 @@ function vBuild(){
  h+=n>=3?item('Башня','Стреляет по зомби · '+ntw()+'/4',cost(BT.tower.c),btn('b:tower',ntw()<4?'Построить':'Макс.',can(BT.tower.c)&&ntw()<4)):lockI('Башня','после 3-го дома');
  h+=n>=2?item('Стены','Не пропускают зомби, игрока и жителей. Проход делайте воротами · прочность 30','<span class="cost"><i'+(inv.stone>=3?'':' class="no"')+'>🪨 3 за клетку</i></span>',btn('b:wall','Строить',can(BT.wall.c))):lockI('Стены','после 2-го дома');
  h+=n>=2?item('Ворота','Деревянные, прочность 36. Открываются, когда рядом игрок, житель или солдат. Зомби их ломают','<span class="cost"><i'+(inv.wood>=6?'':' class="no"')+'>🪵 6 за клетку</i></span>',btn('b:gate','Строить',can(BT.gate.c))):lockI('Ворота','после 2-го дома');
- h+=head('Снос');h+=item('Снос здания или стены','Нажмите на здание или стену на карте: 1 🪙 за каждое','<span class="cost"><i'+(inv.coin>=1?'':' class="no"')+'>🪙 1</i></span>',btn('b:demo','Снос',inv.coin>=1));
+ h+=head('Мосты');h+=item('Мост','Настил через воду. Строится от берега, клетка за клеткой. Зомби по мосту тоже ходят, при необходимости снесите его','<span class="cost"><i'+(inv.wood>=2?'':' class="no"')+'>🪵 2 за клетку</i></span>',btn('b:bridge','Строить',inv.wood>=2));h+=head('Снос');h+=item('Снос','Нажмите на здание, стену, мост, пень или яму: 1 🪙 за каждое','<span class="cost"><i'+(inv.coin>=1?'':' class="no"')+'>🪙 1</i></span>',btn('b:demo','Снос',inv.coin>=1));
  return h}
 
 function vVil(){
@@ -366,6 +370,7 @@ function vMkt(){
  [['wood','🪵'],['stone','🪨'],['iron','🔩']].forEach(([k,e])=>{const q=k=='iron'?2:5;h+=item(e+' '+q+' шт.','+'+(q*PR[k])+' 🪙 (по '+PR[k]+') · у вас '+inv[k],'',btn('sell:'+k,'Продать',inv[k]>=q))});
  h+=head('Купить');
  h+=item('🌾 10 еды','12 🪙 · склад '+(inv.food|0)+'/'+cap(),'',btn('buy','Купить',inv.coin>=12&&inv.food+10<=cap()));
+ h+=item('🔩 1 железа','8 🪙 · у вас '+inv.iron,'',btn('buyi','Купить',inv.coin>=8));
  return h}
 
 function vHelp(){
@@ -377,19 +382,22 @@ function vHelp(){
   +'<li><b>Ночью</b> идут зомби, оружие бьёт их само. Жители прячутся в домах и там в безопасности.</li>'
   +'<li><b>Зомби</b> идут к цели через любой проход, а если прохода нет, ломают одну стену.</li>'
   +'<li><b>Стены</b> не пропускают никого. <b>Ворота</b> из дерева открываются для игрока, жителей и солдат, а зомби их ломают.</li>'
-  +'<li><b>Снос:</b> вкладка «Строить» → «Снос», затем нажмите на здание или стену (1 🪙).</li>'
+  +'<li><b>Снос:</b> вкладка «Строить» → «Снос», затем нажмите на здание, стену, мост, пень или яму (1 🪙). Так освобождается место под стройку.</li>'
+  +'<li><b>Мосты:</b> «Строить» → «Мост», затем нажимайте на воду от берега (2 🪵 за клетку).</li>'
   +'<li><b>Карта Евразии:</b> нажмите на мини-карту в углу, чтобы открыть её целиком. Жёлтые точки на ней: другие игроки.</li>'
-  +'<li>Моря непроходимы: идите вдоль берега.</li>'
+  +'<li>Моря непроходимы: идите вдоль берега или стройте мосты.</li>'
+  +'<li><b>Онлайн:</b> другие игроки видны в мире вместе с их деревнями. Зомби и добыча у каждого свои.</li>'
   +'<li>Кнопка 🍄 / 🛡️ вверху снимает и надевает броню.</li>'
   +'<li>Потяните полоску над вкладками или нажмите на неё, чтобы развернуть панель.</li></ul>'}
 
 function vForge(){
  let h='<div class="head"><b>⚒ Кузница</b><button class="btn ghost sm" data-a="close">Закрыть</button></div>';
+ if(inv.iron<4)h+=hint('Для оружия нужно железо 🔩. Его добывают из железной руды (серый камень с оранжевыми точками) или покупают на рынке.');
  WPN.forEach(w=>{const lv=own[w.id],dm=l=>Math.round(w.d*(1+.2*(l-1))),c=lv?uc(lv):w.c,kind=w.id=='bow'?'дальний бой':'ближний бой';
   const sub=(lv?'Уровень '+lv+'/5 · урон '+dm(lv)+(lv<5?' → '+dm(lv+1):''):'Урон '+dm(1))+' · '+kind;
   const main=!lv?btn('mk:'+w.id,'Создать',can(w.c)):lv<5?btn('up:'+w.id,'Улучшить',can(uc(lv))):btn('','Максимум',false);
   const eqb=lv?btn('eq:'+w.id,eq==w.id?'В руке':'Взять',eq!=w.id,true):'';
-  h+='<div class="item"><div class="t"><b>'+w.n+'</b><small>'+sub+'</small>'+(lv<5?cost(c):'')+'</div><div class="acts">'+main+eqb+'</div></div>'});
+  h+='<div class="item"><div class="t"><b>'+w.n+'</b><small>'+sub+'</small>'+(!lv||lv<5?cost(c):'')+'</div><div class="acts">'+main+eqb+'</div></div>'});
  return h}
 
 function render(){
@@ -408,6 +416,7 @@ ui.addEventListener('click',e=>{const el=e.target.closest('[data-a]');if(!el||el
  if(k=='fu'){const f=HS[+id];if(f&&f[2]=='farm'&&(f[4]||1)<10){const c=fc(f[4]||1);if(can(c)){pay(c);f[4]=(f[4]||1)+1}}}
  if(k=='sell'){const q=id=='iron'?2:5;if(inv[id]>=q){inv[id]-=q;inv.coin+=q*PR[id]}}
  if(k=='buy'&&inv.coin>=12&&inv.food+10<=cap()){inv.coin-=12;inv.food+=10}
+ if(k=='buyi'&&inv.coin>=8){inv.coin-=8;inv.iron+=1}
  if(k=='hire'&&hb()&&A.length<maxA()&&can(HC)){pay(HC);A.push(newSoldier())}
  if(k=='eq'&&own[id])eq=id;
  if(k=='b'&&BT[id]&&(id=='demo'||(id=='hall'?!hallB():hallB()))){build=id;sheetOpen=false}
@@ -425,14 +434,15 @@ function demolish(h){const i=HS.indexOf(h);if(i<0)return;HS.splice(i,1);for(let 
 cv.addEventListener('pointerdown',e=>{const r=cv.getBoundingClientRect(),wx=cam.x+(e.clientX-r.left)*W/r.width,wy=cam.y+(e.clientY-r.top)*H/r.height,tx=wx/T|0,ty=wy/T|0,sxp=(e.clientX-r.left)*W/r.width,syp=(e.clientY-r.top)*H/r.height;
  if(bigMap){bigMap=false;return}
  {const mw=mmW(),mh=Math.round(mw*NH/NW),mx=W-mw-6;if(sxp>=mx-4&&sxp<=W&&syp>=2&&syp<=mh+12){bigMap=true;return}}
- if(build=='demo'){const b=HS.find(h=>tx>=h[0]&&tx<=h[0]+1&&ty>=h[1]&&ty<=h[1]+1),w=WA[tx+','+ty];
-  if(!b&&!w){msg='Здесь нечего сносить';msgT=2}
+ if(build=='demo'){const b=HS.find(h=>tx>=h[0]&&tx<=h[0]+1&&ty>=h[1]&&ty<=h[1]+1),w=WA[tx+','+ty],ob=at[tx+','+ty],br=BR[tx+','+ty];
+  if(!b&&!w&&!br&&!(ob&&ob.dead)){msg='Здесь нечего сносить';msgT=2}
   else if(inv.coin<1){msg='Для сноса нужна 1 монета';msgT=2}
   else if(b&&HS.length<=1){msg='Нельзя снести последнее здание';msgT=2}
-  else{inv.coin-=1;if(w){hs.delete(tx+','+ty);delete WA[tx+','+ty];wgT=0}else demolish(b);msg='Снесено: −1 монета';msgT=2;render()}
+  else if(br&&!b&&!w&&onTile(tx,ty)){msg='На мосту кто-то стоит';msgT=2}
+  else{inv.coin-=1;if(w){hs.delete(tx+','+ty);delete WA[tx+','+ty];wgT=0}else if(b)demolish(b);else if(br)delBr(tx,ty);else rmO(tx+','+ty);msg='Снесено: −1 монета';msgT=2;render()}
   return}
 
- if(build){const bt=BT[build];if(build=='wall'||build=='gate'){const ex=WA[tx+','+ty];if(build=='gate'&&ex&&!ex.g&&can(bt.c)){pay(bt.c);ex.g=true;ex.hp=ex.mx=36;wgT=0;render();return}if(!ex&&fr1(tx,ty)&&can(bt.c)){pay(bt.c);addW(tx,ty,build=='gate');render();return}}else if(free(tx,ty)&&can(bt.c)&&(build=='hall'||hallB())&&!(build=='house'&&nh()>=8)&&!(build=='hall'&&hallB())){pay(bt.c);addH(tx,ty,build);build=null;render();return}}
+ if(build){const bt=BT[build];if(build=='bridge'){if(canBr(tx,ty)&&can(bt.c)){pay(bt.c);addBr(tx,ty);render()}else if(!can(bt.c)){msg='Не хватает дерева';msgT=2}else{msg='Мост строят на воде от берега или от другого моста';msgT=2}return}if(build=='wall'||build=='gate'){const ex=WA[tx+','+ty];if(build=='gate'&&ex&&!ex.g&&can(bt.c)){pay(bt.c);ex.g=true;ex.hp=ex.mx=36;wgT=0;render();return}if(!ex&&fr1(tx,ty)&&can(bt.c)){pay(bt.c);addW(tx,ty,build=='gate');render();return}}else if(free(tx,ty)&&can(bt.c)&&(build=='hall'||hallB())&&!(build=='house'&&nh()>=8)&&!(build=='hall'&&hallB())){pay(bt.c);addH(tx,ty,build);build=null;render();return}}
  const fh=HS.find(h=>h[2]=='forge'&&tx>=h[0]&&tx<=h[0]+1&&ty>=h[1]&&ty<=h[1]+1);
  if(fh){P.tg=null;P.tx=fh[0]*T+16;P.ty=(fh[1]+2)*T+8;P.of=true;return}
  P.of=false;if(fo){fo=false;render()}
@@ -500,7 +510,7 @@ function zPlan(z){
  if(!z.tw){let bd=1e9;for(const k in WA){const w=WA[k];if(w.hp<=0)continue;const d=Math.hypot(w.x*T+8-z.x,w.y*T+8-z.y);if(d<bd){bd=d;z.tw=w}}}
  if(!z.tw)z.mode='direct'}
 /* дружеские юниты (игрок, жители, солдаты): стены не пропускают, ворота открываются рядом с ними */
-const fBlk=(x,y)=>{const w=WA[(x/T|0)+','+(y/T|0)];return !isLand(x/T|0,y/T|0)||(!!w&&w.hp>0&&!(w.g&&w.open))};
+const fBlk=(x,y)=>{const w=WA[(x/T|0)+','+(y/T|0)];return !walk(x/T|0,y/T|0)||(!!w&&w.hp>0&&!(w.g&&w.open))};
 function losF(x0,y0,x1,y1){const d=Math.hypot(x1-x0,y1-y0),n=Math.max(1,Math.ceil(d/4));for(let i=1;i<=n;i++){const t=i/n,cx=(x0+(x1-x0)*t)/T|0,cy=(y0+(y1-y0)*t)/T|0;if(cx<0||cy<0||cx>=NW||cy>=NH||FG[cy*NW+cx])return false}return true}
 function fPlan(o,tx,ty){
  if(losF(o.x,o.y,tx,ty)){o.wx=tx;o.wy=ty;o.wk='go';return}
@@ -533,6 +543,7 @@ function tick(dt){
  wgT-=dt;if(wgT<=0){wgBuild();wgT=.2}
  for(let i=Z.length-1;i>=0;i--){const z=Z[i],dp=Math.hypot(P.x-z.x,P.y-z.y);
   if(!night&&z.n)z.hp-=2*dt;
+  if(!walk(z.x/T|0,z.y/T|0))z.hp-=12*dt;
   if(z.hp<=0){Z.splice(i,1);continue}
   /* ближайшая видимая цель для удара: игрок, солдат, житель (не спрятанный в доме) */
   let nu=P,nt='p',nd2=dp;
@@ -550,7 +561,7 @@ function tick(dt){
   const dx=gx-z.x,dy=gy-z.y,m=Math.hypot(dx,dy);
   if(Math.abs(dx)>1)z.fl=dx<0;
   if(m>stop){const s=Math.min(m,(night?38:29)*dt),nx=z.x+dx/m*s,ny=z.y+dy/m*s,ins=wallAt(z.x,z.y),wd=ins?null:wallAt(nx,ny);
-   if(!isLand(nx/T|0,ny/T|0)){}else if(!wd){z.x=nx;z.y=ny}else{if(!wallAt(nx,z.y))z.x=nx;else if(!wallAt(z.x,ny))z.y=ny;if(z.mode=='wall')wd.hp-=dt*2}}
+   if(!walk(nx/T|0,ny/T|0)){}else if(!wd){z.x=nx;z.y=ny}else{if(!wallAt(nx,z.y))z.x=nx;else if(!wallAt(z.x,ny))z.y=ny;if(z.mode=='wall')wd.hp-=dt*2}}
   else if(z.mode=='path'&&!z.go)z.pt=0;
   z.ct-=dt;
   if(z.ct<=0){
@@ -563,7 +574,7 @@ function tick(dt){
  if(hp<=0){const l=[];['wood','stone','iron'].forEach((k,i)=>{const n=Math.ceil(inv[k]*.15);inv[k]-=n;l.push(n+['🪵','🪨','🔩'][i])});
   msg='Вы погибли! Потеряно: '+l.join(' ');msgT=4;hp=MH;Z.length=0;const h=HS[0];P.x=P.tx=h[0]*T+16;P.y=P.ty=(h[1]+3)*T;P.tg=null;P.of=false;render()}}
 function update(dt){
- gt+=dt;if(P.fx>0)P.fx-=dt;try{tick(dt)}catch(e){console.error(e)}try{army(dt);vil(dt);village(dt);misc(dt)}catch(e){console.error(e)}
+ gt+=dt;if(P.fx>0)P.fx-=dt;WORLD.players.forEach(p=>{const k=Math.min(1,dt*8),dx=p.x-p.rx;p.rx+=dx*k;p.ry+=(p.y-p.ry)*k;p.mv=Math.hypot(dx,p.y-p.ry)>1.5;if(Math.abs(dx)>1.5)p.fl=dx<0});try{tick(dt)}catch(e){console.error(e)}try{army(dt);vil(dt);village(dt);misc(dt)}catch(e){console.error(e)}
  O.forEach(o=>{if(o.dead&&gt>o.back){o.dead=false;o.hp=D[o.t].h;mmD=true}if(o.hit>0)o.hit-=dt});
  const tg=P.tg;
  if(tg&&Math.hypot(tg.x*T+8-P.x,tg.y*T+8-P.y)<=16){P.tx=P.x;P.ty=P.y;P.mv=false;P.fl=tg.x*T+8<P.x;P.ht-=dt;
@@ -659,15 +670,16 @@ let mmD=false;
 const mmW=()=>Math.round(Math.min(112,H*.27*NW/NH));
 function drawMini(){const mw=mmW(),mh=Math.round(mw*NH/NW),mx=W-mw-6,my=6,px=x=>mx+x/NW*mw,py=y=>my+y/NH*mh;
  R('rgba(0,0,0,.6)',mx-2,my-2,mw+4,mh+4);ctx.drawImage(WMAP,0,0,NW,NH,mx,my,mw,mh);
- OTH().forEach(o=>R('#ffd45c',Math.round(px(o.x))-1,Math.round(py(o.y))-1,2,2));
+ OTH().forEach(o=>R('#ffd45c',Math.round(px(o.rx/T))-1,Math.round(py(o.ry/T))-1,2,2));
  R('#fff',Math.round(px(P.x/T))-2,Math.round(py(P.y/T))-2,4,4);R('#d23b2f',Math.round(px(P.x/T))-1,Math.round(py(P.y/T))-1,2,2);
  if(bigMap){const sc=Math.min((W-12)/NW,(H-34)/NH),bw=NW*sc,bh=NH*sc,ox=(W-bw)/2,oy=(H-bh)/2+8;R('rgba(6,10,20,.84)',0,0,W,H);ctx.drawImage(WMAP,0,0,NW,NH,ox,oy,bw,bh);
   ctx.font='7px "Press Start 2P",monospace';ctx.textBaseline='top';ctx.textAlign='center';ctx.fillStyle='#fff';ctx.fillText('Карта Евразии · нажмите, чтобы закрыть',W/2,Math.max(2,oy-13));
-  ctx.textAlign='left';OTH().forEach(o=>{const x=Math.round(ox+o.x*sc),y=Math.round(oy+o.y*sc),tw=ctx.measureText(o.name).width;R('#ffd45c',x-2,y-2,4,4);R('rgba(0,0,0,.65)',x+4,y-4,tw+4,9);ctx.fillStyle='#ffe9a8';ctx.fillText(o.name,x+6,y-3)});
+  ctx.textAlign='left';OTH().forEach(o=>{const x=Math.round(ox+o.rx/T*sc),y=Math.round(oy+o.ry/T*sc),tw=ctx.measureText(o.name).width;R('#ffd45c',x-2,y-2,4,4);R('rgba(0,0,0,.65)',x+4,y-4,tw+4,9);ctx.fillStyle='#ffe9a8';ctx.fillText(o.name,x+6,y-3)});
   const x=Math.round(ox+P.x/T*sc),y=Math.round(oy+P.y/T*sc),bl=(gt*3|0)%2;R('#fff',x-3,y-3,6,6);R(bl?'#d23b2f':'#8a1a12',x-2,y-2,4,4);R('rgba(0,0,0,.65)',x+5,y-4,28,9);ctx.fillStyle='#fff';ctx.fillText('Вы',x+7,y-3)}}
 function draw(){
  cam.x=Math.round(Math.max(0,Math.min(NW*T-W,P.x-W/2)));cam.y=Math.round(Math.max(0,Math.min(NH*T-H,P.y-H/2)));
  const dmk=dk()?'d':'l';for(let cy=Math.floor(cam.y/CP);cy<=Math.floor((cam.y+H-1)/CP);cy++)for(let cx=Math.floor(cam.x/CP);cx<=Math.floor((cam.x+W-1)/CP);cx++)ctx.drawImage(chunk(cx,cy,dmk),cx*CP-cam.x,cy*CP-cam.y);
+ for(const k in BR){const b=BR[k],bx=b.x*T-cam.x,by=b.y*T-cam.y;if(bx<-T||by<-T||bx>W||by>H)continue;R('#4a2a12',bx,by,T,T);R('#a8743a',bx,by+2,T,T-4);for(let i=0;i<4;i++)R('#8f5e2e',bx+i*4+3,by+2,1,T-4);R('#c99259',bx,by+2,T,1)}
  O.forEach(o=>{let sx=o.x*T-cam.x,sy=o.y*T-cam.y;if(sx<-T||sy<-T||sx>W||sy>H)return;
   if(o.hit>0)sx+=1;
   if(o.dead){if(o.t=='tree')ctx.drawImage(S.stump,sx,sy);else{R('#6b5a3a',sx+5,sy+13,6,2);R('#8a7650',sx+6,sy+12,3,1)}return}
@@ -675,9 +687,15 @@ function draw(){
   ctx.drawImage(S[o.t],sx,sy);
   if(P.tg===o&&o.hp<D[o.t].h){R('#1d2420',sx,sy-6,16,3);R('#ffd45c',sx,sy-6,16*o.hp/D[o.t].h,3)}});
  Object.values(WA).forEach(w=>{const sx=w.x*T-cam.x,sy=w.y*T-cam.y;if(sx<-T||sy<-T||sx>W||sy>H)return;ctx.drawImage(w.g?(w.open?S.gateO:S.gate):S.wall,sx,sy);if(w.hp<w.mx){R('#1d2420',sx+2,sy-3,12,3);R('#e0463a',sx+3,sy-2,10*Math.max(0,w.hp)/w.mx,1)}if(w.hp<w.mx*.6){R('#1d2420',sx+4,sy+6,1,6);R('#1d2420',sx+5,sy+11,3,1);R('#1d2420',sx+10,sy+7,1,5)}});
- HS.forEach(([x,y,t,i,l])=>{const sx=x*T-cam.x,sy=y*T-cam.y;if(t=='forge')forge(sx,sy);else if(t=='farm')farm(sx,sy,l||1);else if(t=='barracks')barracks(sx,sy);else if(t=='granary')granary(sx,sy);else if(t=='tower')tower(sx,sy);else if(t=='hall')hall(sx,sy);else house(sx,sy,i%6)});
- OTH().forEach(o=>{const sx=o.x*T-cam.x,sy=o.y*T-cam.y;if(sx<-90||sy<-60||sx>W+60||sy>H+60)return;hall(sx,sy);const q=o.q||0;if(isLand(o.x+3,o.y+1)&&isLand(o.x+4,o.y+2))house(sx+3*T,sy+T,q%6);if(isLand(o.x-3,o.y+1)&&isLand(o.x-2,o.y+2))house(sx-3*T,sy+T,(q+3)%6);
-  ctx.font='7px "Press Start 2P",monospace';ctx.textBaseline='top';ctx.textAlign='center';const tw=ctx.measureText(o.name).width;R('rgba(0,0,0,.55)',sx+16-tw/2-3,sy-18,tw+6,10);ctx.fillStyle='#ffe9a8';ctx.fillText(o.name,sx+16,sy-16);ctx.textAlign='left'});
+ const drawB=([x,y,t,i,l])=>{const sx=x*T-cam.x,sy=y*T-cam.y;if(sx<-48||sy<-48||sx>W+48||sy>H+48)return;if(t=='forge')forge(sx,sy);else if(t=='farm')farm(sx,sy,l||1);else if(t=='barracks')barracks(sx,sy);else if(t=='granary')granary(sx,sy);else if(t=='tower')tower(sx,sy);else if(t=='hall')hall(sx,sy);else house(sx,sy,i%6)};
+ WORLD.players.forEach(p=>p.hs.forEach(drawB));HS.forEach(drawB);
+ WORLD.players.forEach(p=>{const hl=p.hs.find(h=>h[2]=='hall');
+  if(hl){const lx=hl[0]*T-cam.x+16,ly=hl[1]*T-cam.y-16;if(lx>-60&&lx<W+60&&ly>-20&&ly<H+20)lab(p.name,lx,ly,'#ffe9a8')}
+  const ax=Math.round(p.rx-cam.x),ay=Math.round(p.ry-cam.y);if(ax<-40||ay<-40||ax>W+40||ay>H+40)return;
+  const bb=p.mv&&(gt*10|0)%2?-1:0;R('rgba(0,0,0,.3)',ax-6,ay+6,12,3);
+  ctx.drawImage(p.armor?(p.fl?S.knightL:S.knight):(p.fl?S.mushL:S.mush),ax-8,ay-8+bb);
+  if(p.eq&&GR[p.eq]){const hd=p.armor?[12,9]:[12,11],fx=p.fl?15-hd[0]:hd[0];ctx.drawImage(S['w_'+p.eq+(p.fl?'L':'')],ax-8+fx-(p.fl?7:8),ay-8+hd[1]+bb-GR[p.eq])}
+  lab(p.name,ax,ay-22,'#fff')});
  V.forEach(v=>{if(v.hide)return;const vx=Math.round(v.x-cam.x),vy=Math.round(v.y-cam.y);if(vx<-16||vy<-16||vx>W+16||vy>H+16)return;
   R('rgba(0,0,0,.3)',vx-5,vy+6,10,3);ctx.drawImage((v.fl?S.vL:S.v)[v.c],vx-8,vy-8+(v.mv&&(gt*8|0)%2?-1:0));if(v.hp<v.mh){R('#1d2420',vx-6,vy-12,12,3);R('#e0463a',vx-6,vy-12,12*Math.max(0,v.hp)/v.mh,3)}});
  A.forEach(a=>{const ax=Math.round(a.x-cam.x),ay=Math.round(a.y-cam.y),b=a.mv&&(gt*10|0)%2?-1:0;if(ax<-16||ay<-16||ax>W+16||ay>H+16)return;
@@ -716,31 +734,51 @@ const ov=document.getElementById('ov'),initData=()=>(window.Telegram&&Telegram.W
 const overlay=(t,b,f)=>{ov.style.display='flex';ov.innerHTML='<div>'+t+'</div>'+(b?'<button id="ovb">'+b+'</button>':'');if(b)document.getElementById('ovb').onclick=f};
 const tgWait=()=>new Promise(res=>{const t0=Date.now();(function f(){if(initData()||Date.now()-t0>4000)res();else setTimeout(f,100)})()});
 async function api(action,data,keep){const r=await fetch(API,{method:'POST',keepalive:!!keep,headers:{'Content-Type':'application/json'},body:JSON.stringify({initData:initData(),action,sid:SID,data})});let j={};try{j=await r.json()}catch(e){}return{s:r.status,j}}
-const snap=()=>({v:3,map:'eu1',home:HOME.i,inv,HS:HS.map(h=>[h[0],h[1],h[2],h[4]]),own,armor,eq,cyc,army:A.length,vil:V.length,hap:Math.round(hap),walls:Object.values(WA).map(w=>[w.x,w.y]),gates:Object.values(WA).filter(w=>w.g).map(w=>[w.x,w.y]),x:Math.round(P.x),y:Math.round(P.y)});
+const snap=()=>({v:3,map:'eu1',home:HOME.i,inv,HS:HS.map(h=>[h[0],h[1],h[2],h[4]]),own,armor,eq,cyc,army:A.length,vil:V.length,hap:Math.round(hap),walls:Object.values(WA).map(w=>[w.x,w.y]),bridges:Object.values(BR).map(b=>[b.x,b.y]),gates:Object.values(WA).filter(w=>w.g).map(w=>[w.x,w.y]),x:Math.round(P.x),y:Math.round(P.y)});
 function apply(d){try{if(!d||!Array.isArray(d.HS)||d.v!==3||d.map!=='eu1')return;
  const num=(v,lo,hi,df)=>typeof v=='number'&&isFinite(v)?Math.max(lo,Math.min(hi,v)):df,ok=Number.isInteger;
  const hl=d.HS.filter(h=>Array.isArray(h)&&['house','farm','forge','barracks','granary','tower','hall'].includes(h[2])&&ok(h[0])&&ok(h[1])&&h[0]>=0&&h[1]>=0&&h[0]<NW-1&&h[1]<NH-1&&isLand(h[0],h[1])&&isLand(h[0]+1,h[1]+1));
  if(!hl.length)return;
- if(ok(d.home)&&d.home>=0&&d.home<SP.length)setHome(d.home);HS.length=0;hs.clear();NPCT.forEach(k=>hs.add(k));hl.forEach(h=>addH(h[0],h[1],h[2],Math.round(num(h[3],1,10,1))));
+ if(ok(d.home)&&d.home>=0&&d.home<SP.length)setHome(d.home);HS.length=0;hs.clear();hl.forEach(h=>addH(h[0],h[1],h[2],Math.round(num(h[3],1,10,1))));
  const iv=d.inv||{};['wood','stone','iron','food','coin'].forEach(k=>{inv[k]=num(iv[k],0,k=='food'?1e4:1e9,inv[k])});
  WPN.forEach(w=>{const l=d.own&&d.own[w.id];if(ok(l)&&l>=1&&l<=5)own[w.id]=l});
  eq=own[d.eq]?d.eq:Object.keys(own)[0]||null;if(d.armor===false)armor=false;cyc=num(d.cyc,0,1e7,0);
  A.length=0;for(let i=0,n=num(d.army,0,12,0)|0;i<n;i++)A.push(newSoldier());
- (Array.isArray(d.walls)?d.walls:[]).forEach(w=>{if(Array.isArray(w)&&ok(w[0])&&ok(w[1])&&fr1(w[0],w[1]))addW(w[0],w[1])});
+ (Array.isArray(d.bridges)?d.bridges:[]).slice(0,5000).forEach(b=>{if(Array.isArray(b)&&ok(b[0])&&ok(b[1])&&b[0]>0&&b[1]>0&&b[0]<NW-1&&b[1]<NH-1&&!isLand(b[0],b[1]))addBr(b[0],b[1])});
+ (Array.isArray(d.walls)?d.walls:[]).forEach(w=>{if(Array.isArray(w)&&ok(w[0])&&ok(w[1])){rmO(w[0]+','+w[1]);if(fr1(w[0],w[1]))addW(w[0],w[1])}});
  (Array.isArray(d.gates)?d.gates:[]).forEach(w=>{const e=Array.isArray(w)&&WA[w[0]+','+w[1]];if(e&&!e.g){e.g=true;e.hp=e.mx=36}});
  hap=num(d.hap,0,100,hap);const hs2=HS.filter(h=>h[2]=='house');V.length=0;
  for(let i=0,n=Math.min(num(d.vil,0,99,0)|0,capV());i<n&&hs2.length;i++)V.push(mkV(hs2[i%hs2.length]));
  P.x=P.tx=num(d.x,8,NW*T-8,P.x);P.y=P.ty=num(d.y,8,NH*T-8,P.y)}catch(e){}}
 async function save(keep){if(demo||locked||saving||!started)return;const j=JSON.stringify(snap());if(j===lastJ)return;saving=true;
  try{const r=await api('save',JSON.parse(j),keep);if(r.s==200)lastJ=j;else if(r.s==409){locked=true;overlay('Игра открыта на другом устройстве.','Играть здесь',()=>location.reload())}else if(r.s==401){locked=true;overlay('Сессия устарела. Закройте игру и откройте её заново из Telegram.')}}catch(e){}saving=false}
+const BTYPES=['house','farm','forge','barracks','granary','tower','hall'];
+const lab=(t,cx,cy,col)=>{ctx.font='7px "Press Start 2P",monospace';ctx.textBaseline='top';ctx.textAlign='center';const tw=ctx.measureText(t).width;R('rgba(0,0,0,.55)',Math.round(cx-tw/2-3),cy-2,tw+6,10);ctx.fillStyle=col;ctx.fillText(t,cx,cy);ctx.textAlign='left'};
+function mergePlayers(list){const prev=new Map(WORLD.players.map(p=>[p.id,p])),ni=Number.isInteger,out=[];
+ for(const p of list.slice(0,100)){if(!p||typeof p.id!='string'||p.id.length>64)continue;
+  const x=Math.max(8,Math.min(NW*T-8,+p.x||0)),y=Math.max(8,Math.min(NH*T-8,+p.y||0));
+  const hs=(Array.isArray(p.hs)?p.hs:[]).filter(h=>Array.isArray(h)&&BTYPES.includes(h[2])&&ni(h[0])&&ni(h[1])&&h[0]>=0&&h[1]>=0&&h[0]<NW-1&&h[1]<NH-1).slice(0,60).map((h,i)=>[h[0],h[1],h[2],i,Math.max(1,Math.min(10,(h[3]|0)||1))]);
+  const o=prev.get(p.id);
+  out.push({id:p.id,name:String(p.name||'Игрок').replace(/[\u0000-\u001f]/g,'').slice(0,20),home:ni(p.home)?p.home:-1,x,y,rx:o?o.rx:x,ry:o?o.ry:y,fl:!!p.fl,mv:false,armor:p.armor!==false,eq:p.eq=='sword'||p.eq=='bow'?p.eq:null,hs})}
+ WORLD.players=out}
+let syncErr=0,syncOk=0;
+async function syncOnce(){if(demo||locked||!started||document.hidden)return;
+ try{const r=await api('sync',{home:HOME.i,x:Math.round(P.x),y:Math.round(P.y),fl:P.fl?1:0,armor,eq,hs:HS.map(h=>[h[0],h[1],h[2],h[4]||1])});
+  if(r.s==200&&r.j&&Array.isArray(r.j.players)){syncErr=0;syncOk=performance.now();mergePlayers(r.j.players)}
+  else if(r.s==409){locked=true;overlay('Игра открыта на другом устройстве.','Играть здесь',()=>location.reload())}
+  else if(r.s==401){locked=true;overlay('Сессия устарела. Закройте игру и откройте её заново из Telegram.')}
+  else syncErr++}catch(e){syncErr++}
+ if(syncErr>=3&&performance.now()-syncOk>20000)WORLD.players=[]}
+function syncLoop(){const run=async()=>{await syncOnce();setTimeout(run,syncErr>=3?30000:2500)};run()}
+async function pickFreeHome(){try{const q=await api('sync',{peek:1});if(q.s==200&&q.j&&Array.isArray(q.j.players)){const taken=new Set(q.j.players.map(p=>p.home));let i=HOME.i;for(let k=0;k<SP.length&&taken.has(i);k++)i=(i+1)%SP.length;if(i!==HOME.i)setHome(i)}}catch(e){}}
 async function boot(){
  try{localStorage.removeItem('village-save-v1')}catch(e){}
  if(API){overlay('Загрузка…');await tgWait()}
  if(!homeSet)setHome(homeFor(tgUid()||SID));
  if(!API||!initData()){demo=true;ov.style.display='none';document.getElementById('demo').textContent=API?'Демо-режим: откройте игру через Telegram, чтобы прогресс сохранялся на сервере.':'Демо-режим: сервер не подключён, прогресс не сохраняется.'}
- else{try{const r=await api('load');if(r.s!=200)throw new Error(r.s);if(r.j.data)apply(r.j.data);ov.style.display='none'}catch(e){overlay('Нет связи с сервером. Ваш прогресс не потерян.','Повторить',boot);return}}
+ else{try{const r=await api('load');if(r.s!=200)throw new Error(r.s);if(r.j.data)apply(r.j.data);else await pickFreeHome();ov.style.display='none'}catch(e){overlay('Нет связи с сервером. Ваш прогресс не потерян.','Повторить',boot);return}}
  if(!started){started=true;render();requestAnimationFrame(loop);
-  if(!demo){setInterval(()=>save(),15000);addEventListener('pagehide',()=>save(true));document.addEventListener('visibilitychange',()=>{if(document.hidden)save(true)})}}}
+  if(!demo){syncLoop();setInterval(()=>save(),15000);addEventListener('pagehide',()=>save(true));document.addEventListener('visibilitychange',()=>{if(document.hidden)save(true)})}}}
 document.getElementById('arm').addEventListener('pointerdown',e=>{e.preventDefault();armor=!armor;P.fx=.4;render()});boot();
 const tgInit=()=>{try{Telegram.WebApp.ready();Telegram.WebApp.expand()}catch(e){}try{Telegram.WebApp.disableVerticalSwipes&&Telegram.WebApp.disableVerticalSwipes()}catch(e){}try{if(!localStorage.getItem('wa1')){localStorage.setItem('wa1','1');Telegram.WebApp.requestWriteAccess&&Telegram.WebApp.requestWriteAccess()}}catch(e){}};addEventListener('load',tgInit);tgInit();
 </script>
