@@ -221,6 +221,8 @@ const S={};
 S.knight=mk(KN,{k:'#1d2420',p:'#d6402f',h:'#cfd6de',H:'#8d98a5',a:'#aeb8c4',A:'#7b8794',b:'#1f6feb',g:'#ffd45c',s:'#f0c8a0',l:'#6b4a2a'});
 S.mush=mk(MU,{k:'#1d2420',R:'#d6402f',r:'#a82a20',w:'#ffffff',s:'#f6e8cc',S:'#d9c29a'});
 S.knightL=flip(S.knight);S.mushL=flip(S.mush);
+const SHIPR=["...........kr","...........kmrr","...........kmk","..........kmwk","..........kmwwk","..........kmwwWk","..........kmwwwwk","..........kmwwWwwk","..........kmwwwwwwk",".........kmkkkkkkkk","..........km","...kkkkkkkkmkkkkkkkk","..kHhhhhhhhhhhhhhhHk","..kHhhhhhhhhhhhhhHk.","...kHHhhhhhhhhHHk...","....kkHHHHHHHHkk....","......kkkkkkkk......",".b..bb..bb..b..bb..."];
+S.ship=mk(SHIPR,{k:'#1d2420',m:'#6b4a2a',w:'#f3f1ea',W:'#d3d8e2',r:'#d6402f',h:'#a8743a',H:'#6b4a2a',b:'#bfe3ff'},20);S.shipL=flip(S.ship);
 const HU=[".....kkkkkk.....",
 "....kggggggk....",
 "....kggggggk....",
@@ -253,27 +255,27 @@ S.ore=mk(RK,{k:'#2a2f36',r:'#58606b',R:'#737c88',w:'#9aa4b0',d:'#40464f'});
 {const g=S.ore.getContext('2d');[[5,9],[9,8],[7,11],[11,11],[4,12],[10,13]].forEach(([x,y])=>{g.fillStyle='#d98a4a';g.fillRect(x,y,2,2);g.fillStyle='#ffc58a';g.fillRect(x,y,1,1)})}
 const ZB=["",".....kkkkkk","....kzzzzzzk","....kzezzezk","....kzzzzzzk","....kzzmmzzk",".....kkzzkk","...kzkccccckzk","...kzkcCCCckzk","....kkccccckk",".....kpppppk",".....kppkppk",".....kppkppk",".....kppkppk","....kzzk.kzzk","....kkkk.kkkk"];
 S.z=mk(ZB,{k:'#1d2420',z:'#6fae5a',e:'#e0382c',m:'#3a1a1a',c:'#5b6aa8',C:'#3d4a80',p:'#6b4a2a'});S.zL=flip(S.z);
-const big=c=>{const b=document.createElement('canvas');b.width=b.height=20;const g=b.getContext('2d');g.imageSmoothingEnabled=false;g.drawImage(c,0,0,20,20);return b};const ZB20=["....................",
-".......kkkkkk.......",
-"......khhhhhhk......",
-".....khhzhhzhhk.....",
-".....kzZZzzZZzk.....",
-".....kzeezzeezk.....",
-".....kzzzZZzzzk.....",
-".....kZzmwmwzZk.....",
-"......kzzmmzzk......",
-".......kZZZZk.......",
-"...kzzkcccccckzzk...",
-"...kzZkcCccrrkZzk...",
-"...kzZkccfbcckZzk...",
-"...kzzkcCffbCkzzk...",
-"..kzzzkccCCcckzzzk..",
-"..kkkkkccCCcckkkkk..",
-"......kppppppk......",
-"......kppkkppk......",
-"......kzZkkZzk......",
-"......kkkkkkkk......"];
-S.zB=mk(ZB20,{k:'#1d2420',h:'#2c3a22',z:'#74b35e',Z:'#4d8a3f',e:'#ff4a3a',m:'#2a1212',w:'#e8e2c8',c:'#5b6aa8',C:'#3d4a80',r:'#b03a3a',f:'#a34a4a',b:'#e8e2c8',p:'#6b4a2a'},20);S.zBL=flip(S.zB);
+const big=c=>{const b=document.createElement('canvas');b.width=b.height=20;const g=b.getContext('2d');g.imageSmoothingEnabled=false;g.drawImage(c,0,0,20,20);return b};const ZB20=["",
+".......kkkkkk",
+"......kRRRRRRk",
+".....kRRRRRRRRk",
+".....kddssssddk",
+".....kseesseesk",
+".....kssssssssk",
+".....kMMMMMMMMk",
+"......kMMMMMMk...y",
+".......kssssk....x",
+"...kTTkVttttVkTTkx",
+"...kTTkVttttVkTTkx",
+"...ksskbbggbbksskxh",
+"...kkkkppppppkkkk",
+"......kppppppk",
+"......kppkkppk",
+"......kppkkppk",
+"......kBBkkBBk",
+"......kkkkkkkk",
+""];
+S.zB=mk(ZB20,{k:'#1d2420',R:'#a8281c',d:'#3a2a22',s:'#e0b088',e:'#1d2420',M:'#3a3a48',T:'#6b5a46',V:'#5a3a1e',t:'#8a7456',b:'#2a1a0a',g:'#ffd45c',p:'#4a4f63',B:'#3a2a1a',x:'#cfd6de',y:'#ffffff',h:'#6b4a2a'},20);S.zBL=flip(S.zB);
 const WLL=["kkkkkkkkkkkkkkkk","klllllllllllllsk","klllllllllllllsk","kssssssssssssSSk","kkkkkkkkkkkkkkkk","ksssssksssssssdk","ksssssksssssssdk","kkkkkkkkkkkkkkkk","ksssksssssksssdk","ksssksssssksssdk","kkkkkkkkkkkkkkkk","ksssssksssssssdk","ksssssksssssssdk","kSSSSSkSSSSSSSdk","kddddddddddddddk","kkkkkkkkkkkkkkkk"];
 S.wall=mk(WLL,{k:'#2a2f36',l:'#c4cad2',s:'#9aa0a8',S:'#7a828c',d:'#565d66'});
 {const P1={k:'#2a1a0a',w:'#b07a3e',W:'#8f5e2e',i:'#6b7380'},e='kkkkkkkkkkkkkkkk',c=[e],o=[e];for(let i=1;i<15;i++){const b=i==3||i==11;c.push(b?'kiiiiiiikiiiiiik':'kwWwWwWwkWwWwWwk');o.push(b?'kiik........kiik':'kwWk........kWwk')}c.push(e);o.push('kkkk........kkkk');S.gate=mk(c,P1);S.gateO=mk(o,P1)}
@@ -319,13 +321,13 @@ const OTH=()=>WORLD.players; /* WORLD.players: сюда придут игрок�
 const PLNAMES=['Ярик','Мира','Тимур','Алия','Бао','Ли Вэй','Рави','Ханна','Ян','Сакура','Дмитрий','Эмма','Хассан','Нино','Ким'];
 const hstr=s=>{let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0};
 const homeFor=k=>hstr(String(k))%SP.length;
-const hs=new Set(),HS=[];
-const addH=(x,y,t,l)=>{HS.push([x,y,t,HS.length,l||1]);for(let a=0;a<2;a++)for(let b=0;b<2;b++){hs.add((x+a)+','+(y+b));rmO((x+a)+','+(y+b))}};
+const hs=new Set(),HS=[];let wver=0;
+const addH=(x,y,t,l)=>{wver++;HS.push([x,y,t,HS.length,l||1]);for(let a=0;a<2;a++)for(let b=0;b<2;b++){hs.add((x+a)+','+(y+b));rmO((x+a)+','+(y+b))}};
 function setHome(i){homeSet=true;const s=SP[i];HOME={x:s.x,y:s.y,i};HS.length=0;hs.clear();addH(s.x,s.y,'house');P.x=P.tx=s.x*T+16;P.y=P.ty=(s.y+3)*T;P.tg=null}
 const free=(x,y)=>{if(x<0||y<0||x+1>=NW||y+1>=NH)return false;for(let a=0;a<2;a++)for(let b=0;b<2;b++){const k=(x+a)+','+(y+b);if(at[k]||hs.has(k)||!isLand(x+a,y+b))return false}return true};
 const P={x:48*T,y:50*T,tx:48*T,ty:50*T,tg:null,ht:0},inv={wood:0,stone:0,iron:0,food:40,coin:20},cam={x:0,y:0};
 let build=null,gt=0,last=performance.now();
-const BT={hall:{n:'Ратуша',c:[21,13]},house:{n:'Дом',get c(){const k=nh()-1;return[10+3*k,4+2*k]}},forge:{n:'Кузница',c:[20,15]},granary:{n:'Амбар',get c(){const k=ngr();return[16+8*k,10+6*k]}},tower:{n:'Башня',get c(){const k=ntw();return[18+6*k,26+8*k]}},wall:{n:'Стена',c:[0,3]},demo:{n:'Снос',c:[0,0]},bridge:{n:'Мост',c:[2,0]},gate:{n:'Ворота',c:[6,0]},barracks:{n:'Казармы',c:[28,22]},farm:{n:'Ферма',get c(){const k=nf();return[8+4*k,2+2*k]}}},WL=['#8a4b2a','#7a7f86','#a0693a','#6b4a7a','#5e7f6a','#a88a4a'],RF=['#c0392b','#2f5fa8','#2f8a4a','#d98a1a','#7a4b9a','#c0392b'],
+const BT={hall:{n:'Ратуша',c:[21,13]},house:{n:'Дом',get c(){const k=nh()-1;return[10+3*k,4+2*k]}},forge:{n:'Кузница',c:[20,15]},granary:{n:'Амбар',get c(){const k=ngr();return[16+8*k,10+6*k]}},tower:{n:'Башня',get c(){const k=ntw();return[18+6*k,26+8*k]}},wall:{n:'Стена',c:[0,3]},demo:{n:'Снос',c:[0,0]},port:{n:'Порт',c:[30,16]},bridge:{n:'Мост',c:[2,0]},gate:{n:'Ворота',c:[6,0]},barracks:{n:'Казармы',c:[28,22]},farm:{n:'Ферма',get c(){const k=nf();return[8+4*k,2+2*k]}}},WL=['#8a4b2a','#7a7f86','#a0693a','#6b4a7a','#5e7f6a','#a88a4a'],RF=['#c0392b','#2f5fa8','#2f8a4a','#d98a1a','#7a4b9a','#c0392b'],
 WPN=[{id:'sword',n:'Меч',c:[5,5,4],d:9},{id:'bow',n:'Лук',c:[8,3,3],d:7}],own={};
 let fo=false,armor=true;const Z=[];let hp=10,MH=10,zt=15,cyc=0,msg='',msgT=0,atk=0,eq=null,sw=0,hurt=0,starve=false;
 const can=c=>inv.wood>=c[0]&&inv.stone>=c[1]&&inv.iron>=(c[2]||0),cs=c=>c[0]+'🪵 '+c[1]+'🪨'+(c[2]?' '+c[2]+'🔩':''),uc=l=>[3*l,2*l,2*l+1],nh=()=>HS.filter(h=>h[2]=='house').length,fb=()=>HS.some(h=>h[2]=='forge');
@@ -339,12 +341,86 @@ const WA={},SH=[],PR={wood:1,stone:2,iron:4};
 const ngr=()=>HS.filter(h=>h[2]=='granary').length,ntw=()=>HS.filter(h=>h[2]=='tower').length,cap=()=>100+100*ngr();
 const addW=(x,y,g)=>{WA[x+','+y]={x,y,hp:g?36:30,mx:g?36:30,g:!!g,open:false,ot:0};hs.add(x+','+y);wgT=0},fr1=(x,y)=>x>=0&&y>=0&&x<NW&&y<NH&&isLand(x,y)&&!at[x+','+y]&&!hs.has(x+','+y),wallAt=(x,y)=>WA[(x/T|0)+','+(y/T|0)];
 const BR={};
+/* ── общий мир: стены, ворота, мосты и срубленные ресурсы хранятся на сервере и одинаковы у всех ── */
+let zid=0,SS='',SDD='',LOADWS=null;const wop={},whq={},RZ=new Map(),hitq=[];
+/* гриб-босс в центре карты: общий для всех, hp хранится на сервере */
+const BOSS={x:0,y:0,hp:1000,mh:1000,dead:0,on:false,bd:0,last:null,t:0};
+(()=>{for(let r=0;r<40&&!BOSS.on;r++)for(let a=-r;a<=r&&!BOSS.on;a++)for(let b=-r;b<=r;b++){if(Math.max(Math.abs(a),Math.abs(b))!=r)continue;const x=NW/2+a|0,y=NH/2+b|0;let ok=true;for(let i=-2;i<=2&&ok;i++)for(let j=-2;j<=2;j++)if(!isLand(x+i,y+j)){ok=false;break}if(ok){BOSS.x=x*T+8;BOSS.y=y*T+8;BOSS.on=true;break}}})();
+const bossIn=j=>{const b=j.boss;if(b){const was=BOSS.dead;BOSS.hp=b.hp;BOSS.mh=b.mx;BOSS.dead=b.dead||0;if(BOSS.dead>0&&!was&&b.last){msg='Гриб-босс повержен! Больше всех урона нанёс: '+b.last;msgT=5}BOSS.last=b.last}
+ if(j.bonus>0){inv.coin+=j.bonus;msg='Вы нанесли больше всех урона гриб-боссу: +'+j.bonus+' монет!';msgT=6;render()}};
+const refund=c=>{inv.wood+=c[0];inv.stone+=c[1];inv.iron+=c[2]||0};
+const shared=()=>!!API&&!demo;
+function rmWall(k){hs.delete(k);delete WA[k];wgT=0}
+function applyStructs(list,win){const seen=new Set(),ni=Number.isInteger;
+ for(const s of list){if(!Array.isArray(s))continue;const x=s[0],y=s[1],kd=s[2],hv=+s[3]||0,k=x+','+y;if(!ni(x)||!ni(y)||x<0||y<0||x>=NW||y>=NH)continue;seen.add(k);if(wop[k])continue;
+  if(kd=='bridge'){if(!BR[k]&&!isLand(x,y))addBr(x,y);if(BR[k])BR[k].mine=!!s[4];continue}
+  if(kd!='wall'&&kd!='gate')continue;
+  let w=WA[k];
+  if(!w){if(HS.some(h=>x>=h[0]&&x<=h[0]+1&&y>=h[1]&&y<=h[1]+1))continue;rmO(k);addW(x,y,kd=='gate');w=WA[k];w.hp=Math.min(w.mx,hv)||w.mx}
+  else{if(kd=='gate'&&!w.g){w.g=true;w.mx=36;w.hp=hv||36}else w.hp=Math.min(w.hp,hv||w.hp)}
+  w.mine=!!s[4]}
+ if(win){const[x0,y0,x1,y1]=win,inw=(x,y)=>x>=x0&&x<=x1&&y>=y0&&y<=y1;
+  for(const k in WA){const w=WA[k];if(!seen.has(k)&&!wop[k]&&inw(w.x,w.y))rmWall(k)}
+  for(const k in BR){const b=BR[k];if(!seen.has(k)&&!wop[k]&&inw(b.x,b.y)&&!onTile(b.x,b.y))delBr(b.x,b.y)}}
+ wgT=0}
+function applyDead(list){for(const e of list){if(!Array.isArray(e))continue;const o=at[e[0]+','+e[1]];if(o&&!o.dead&&D[o.t]){o.dead=true;o.hp=0;o.back=gt+Math.max(1,+e[2]||45);mmD=true;if(P.tg===o)P.tg=null}}}
+function wBuild(kind,x,y,cost,undo){const k=x+','+y;wop[k]=1;
+ api('world',{op:'build',kind,x,y}).then(r=>{delete wop[k];if(!(r.s==200&&r.j&&r.j.ok)){undo();refund(cost);SS='';msg=r.s==200?'Это место уже занято другим игроком':'Нет связи: постройка отменена';msgT=3;render()}}).catch(()=>{delete wop[k];undo();refund(cost);SS='';render()})}
+function wDemo(x,y){const k=x+','+y;wop[k]=1;api('world',{op:'demolish',x,y}).then(r=>{delete wop[k];SS=''}).catch(()=>{delete wop[k];SS=''})}
+function harvest(o){const g=D[o.t].g,n=D[o.t].n,give=()=>{inv[g]+=n;render()};
+ if(!shared()){give();return}
+ api('world',{op:'kill',x:o.x,y:o.y}).then(r=>{if(r.s==200&&r.j&&r.j.ok===false){msg='Это уже добыл другой игрок';msgT=2.5;render()}else give()}).catch(give)}
 const walk=(x,y)=>isLand(x,y)||!!BR[x+','+y];
 const rmO=k=>{const o=at[k];if(o){delete at[k];const i=O.indexOf(o);if(i>=0)O.splice(i,1);if(P.tg===o)P.tg=null}};
 const canBr=(x,y)=>x>0&&y>0&&x<NW-1&&y<NH-1&&!isLand(x,y)&&!BR[x+','+y]&&!hs.has(x+','+y)&&[[1,0],[-1,0],[0,1],[0,-1]].some(([a,b])=>walk(x+a,y+b));
-const addBr=(x,y)=>{BR[x+','+y]={x,y};WAT[y*NW+x]=0;wgT=0};
-const delBr=(x,y)=>{delete BR[x+','+y];WAT[y*NW+x]=1;wgT=0};
+const addBr=(x,y)=>{wver++;BR[x+','+y]={x,y};WAT[y*NW+x]=0;wgT=0};
+const delBr=(x,y)=>{wver++;delete BR[x+','+y];WAT[y*NW+x]=1;wgT=0};
 const onTile=(x,y)=>[P].concat(A,V,Z).some(u=>(u.x/T|0)==x&&(u.y/T|0)==y);
+
+/* ───────── порты и корабли ───────── */
+const SHIPS=[],MAXSHIPS=20,shipCost=()=>60+30*SHIPS.length,RC=new Map(),D8=[[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]];
+let po=null,SAIL=null;
+const isWater=(x,y)=>x>0&&y>0&&x<NW-1&&y<NH-1&&!isLand(x,y)&&!BR[x+','+y]&&!hs.has(x+','+y);
+const pkey=h=>h[0]+','+h[1],portAt=k=>HS.find(h=>h[2]=='port'&&pkey(h)==k);
+const dockTile=h=>{const x=h[0],y=h[1],L=[[-1,0],[-1,1],[2,0],[2,1],[0,-1],[1,-1],[0,2],[1,2],[-1,-1],[2,-1],[-1,2],[2,2]];for(const[a,b]of L)if(isWater(x+a,y+b))return[x+a,y+b];return null};
+const portOk=(x,y)=>{if(x<1||y<1||x+2>=NW||y+2>=NH)return false;for(let a=0;a<2;a++)for(let b=0;b<2;b++){const k=(x+a)+','+(y+b);if(!BR[k]||hs.has(k))return false}return !!dockTile([x,y])};
+function seaRoute(a,b){const key=a+'|'+b+'|'+wver;if(RC.has(key))return RC.get(key);if(RC.size>40)RC.clear();
+ const N=NW*NH,prev=new Int32Array(N).fill(-2),q=new Int32Array(N);let qh=0,qt=0;const st=a[1]*NW+a[0],g=b[1]*NW+b[0];prev[st]=-1;q[qt++]=st;let found=false;
+ while(qh<qt){const c=q[qh++];if(c==g){found=true;break}const cx=c%NW,cy=c/NW|0;
+  for(const[dx,dy]of D8){const nx=cx+dx,ny=cy+dy,ni=ny*NW+nx;if(nx<1||ny<1||nx>=NW-1||ny>=NH-1||prev[ni]!=-2||!isWater(nx,ny))continue;
+   if(dx&&dy&&(!isWater(cx+dx,cy)||!isWater(cx,cy+dy)))continue;prev[ni]=c;q[qt++]=ni}}
+ let path=null;if(found){path=[];for(let c=g;c!=-1;c=prev[c])path.push([c%NW,c/NW|0]);path.reverse()}
+ RC.set(key,path);return path}
+const routeLen=path=>{let d=0;for(let i=1;i<path.length;i++)d+=Math.hypot(path[i][0]-path[i-1][0],path[i][1]-path[i-1][1]);return d};
+const portRoute=(h1,h2)=>{const a=dockTile(h1),b=dockTile(h2);return a&&b?seaRoute(a,b):null};
+const SHIP_SPD=72;
+function shipXY(sh){if(sh.sail)return{x:sh.x,y:sh.y};const h=portAt(sh.p);if(!h)return{x:sh.x||0,y:sh.y||0};const d=dockTile(h);
+ const mates=SHIPS.filter(u=>!u.sail&&u.p==sh.p),k=Math.max(0,mates.indexOf(sh));
+ return d?{x:d[0]*T+8+(k%2)*5,y:d[1]*T+11+k*9}:{x:h[0]*T+16,y:h[1]*T+16}}
+function newShip(k){return{p:k,x:0,y:0,fl:false,sail:null,k:SHIPS.length*1.7}}
+const hasShip=k=>SHIPS.some(u=>u.p==k);
+function startSail(h){const sh=SHIPS.find(u=>!u.sail&&u.p==pkey(h));if(!sh){msg='В этом порту нет корабля';msgT=3;return}
+ const q=shipXY(sh);sh.x=q.x;sh.y=q.y;sh.sail={path:[],i:0,dock:null};SAIL=sh;P.tg=null;P.of=false;P.pp=null;P.tx=P.x;P.ty=P.y;po=null;sheetOpen=false;msg='⛵ Вы на корабле. Нажмите на воду, чтобы плыть, или на порт, чтобы причалить';msgT=5;render()}
+function steer(tx,ty){const sh=SAIL,sl=sh.sail,cur=[Math.floor(sh.x/T),Math.floor((sh.y-3)/T)];
+ const ph=HS.find(h=>h[2]=='port'&&tx>=h[0]&&tx<=h[0]+1&&ty>=h[1]&&ty<=h[1]+1);
+ if(ph){if(SHIPS.some(u=>u!==sh&&u.p==pkey(ph))){msg='В этом порту уже стоит корабль';msgT=2.5;return}
+  const d=dockTile(ph);if(!d){msg='К порту не подойти: вокруг нет воды';msgT=2.5;return}
+  const path=seaRoute(cur,d);if(!path){msg='Туда не проплыть';msgT=2.5;return}
+  sl.path=path;sl.i=0;sl.dock=ph;msg='⚓ Курс на порт';msgT=2;return}
+ if(isWater(tx,ty)){const path=seaRoute(cur,[tx,ty]);if(!path){msg='Туда не проплыть';msgT=2.5;return}sl.path=path;sl.i=0;sl.dock=null;return}
+ msg='Причалить можно только в своём порту: нажмите на порт';msgT=3}
+function sailTick(dt){const sh=SAIL,sl=sh.sail;let left=SHIP_SPD*dt,moving=false;
+ while(left>0&&sl.i<sl.path.length){moving=true;const t=sl.path[sl.i],tx=t[0]*T+8,ty=t[1]*T+11,dx=tx-sh.x,dy=ty-sh.y,m=Math.hypot(dx,dy);if(Math.abs(dx)>.5)sh.fl=dx<0;if(m<=left){sh.x=tx;sh.y=ty;left-=m;sl.i++}else{sh.x+=dx/m*left;sh.y+=dy/m*left;left=0}}
+ P.x=sh.x;P.y=sh.y-8;P.tx=P.x;P.ty=P.y;P.mv=false;P.fl=sh.fl;
+ if(sl.i>=sl.path.length&&sl.path.length){if(sl.dock){endSail(sl.dock);return}sl.path=[];sl.i=0}
+ if(!moving&&!sl.path.length){msg='⛵ Нажмите на воду, чтобы плыть, или на порт, чтобы причалить';msgT=.5}}
+function endSail(h){const sh=SAIL;if(!sh)return;SAIL=null;sh.sail=null;sh.p=pkey(h);P.x=P.tx=h[0]*T+16;P.y=P.ty=h[1]*T+16;P.tg=null;msg='⚓ Корабль в порту';msgT=2.5;render()}
+function vPort(){const k=pkey(po),here=SHIPS.some(u=>!u.sail&&u.p==k),has=hasShip(k),price=shipCost(),all=HS.filter(h=>h[2]=='port');
+ let h='<div class="head"><b>⚓ Порт №'+(all.indexOf(po)+1)+'</b><button class="btn ghost sm" data-a="close">Закрыть</button></div>';
+ if(has)h+=item('Корабль в порту',here?'Корабль стоит у причала. Сядьте и ведите его сами: нажимайте на воду, а чтобы причалить, нажмите на свой порт':'Корабль сейчас в плавании','',btn('depart','Отплыть',here));
+ else h+=item('Построить корабль','Верфь нанимает команду и строит корабль. В порту может стоять только один корабль','<span class="cost"><i'+(inv.coin>=price?'':' class="no"')+'>🪙 '+price+'</i></span>',btn('ship','Построить',inv.coin>=price&&SHIPS.length<MAXSHIPS));
+ h+=hint('Кораблём управляете вы: нажимайте на воду, и он поплывёт туда. Причалить можно только в порту, где нет другого корабля.');
+ return h}
 let tab='build',sheetOpen=false,lastView='';
 const hpEl=document.getElementById('hp'),sheetEl=document.getElementById('sheet'),tabsEl=document.getElementById('tabs');
 const TABS=[['build','Строить'],['vil','Деревня'],['mkt','Рынок'],['help','Помощь']];
@@ -357,7 +433,7 @@ const head=t=>'<h3>'+t+'</h3>';
 const stat=(l,v,s)=>'<div class="stat"><small>'+l+'</small><b>'+v+'</b>'+(s?'<small>'+s+'</small>':'')+'</div>';
 
 function vBuild(){
- if(build){const w=build=='wall'||build=='gate'||build=='demo'||build=='bridge';return item(BT[build].n,build=='wall'?'Нажимайте на карту: стена стоит 3🪨 за клетку':build=='gate'?'Нажимайте на карту: ворота стоят 6🪵 за клетку. Нажмите на стену, чтобы заменить её воротами':build=='demo'?'Нажмите на здание, стену, мост, пень или яму: снос стоит 1 🪙':build=='bridge'?'Нажимайте на воду рядом с берегом или мостом: 2🪵 за клетку':'Нажмите на свободное место на карте','',btn('cancel',w?'Готово':'Отмена',true,true),'hl')}
+ if(build){const w=build=='wall'||build=='gate'||build=='demo'||build=='bridge';return item(BT[build].n,build=='wall'?'Нажимайте на карту: стена стоит 3🪨 за клетку':build=='gate'?'Нажимайте на карту: ворота стоят 6🪵 за клетку. Нажмите на стену, чтобы заменить её воротами':build=='demo'?'Нажмите на здание, стену, мост, пень или яму: снос стоит 1 🪙':build=='bridge'?'Нажимайте на воду рядом с берегом или мостом: 2🪵 за клетку':build=='port'?'Нажмите на верхний левый угол площадки 2×2 из мостов. Рядом должна быть открытая вода для кораблей':'Нажмите на свободное место на карте','',btn('cancel',w?'Готово':'Отмена',true,true),'hl')}
  if(!hallB())return head('Начало')+item('Ратуша','Собирает налоги с жителей. Пока её нет, другие здания недоступны.',cost(BT.hall.c),btn('b:hall','Построить',can(BT.hall.c)));
  const n=nh();let h=head('Жильё и еда');
  h+=item('Дом','Вмещает 3 жителей · '+n+'/8',cost(BT.house.c),btn('b:house',n<8?'Построить':'Макс.',can(BT.house.c)&&n<8));
@@ -368,10 +444,10 @@ function vBuild(){
  else h+=n>=2?item('Кузница','Оружие: меч и лук',cost(BT.forge.c),btn('b:forge','Построить',can(BT.forge.c))):lockI('Кузница','после 2-го дома');
  if(!hb())h+=n>=3?item('Казармы','Позволяют нанимать солдат',cost(BT.barracks.c),btn('b:barracks','Построить',can(BT.barracks.c))):lockI('Казармы','после 3-го дома');
  h+=head('Оборона');
- h+=n>=3?item('Башня','Стреляет по зомби · '+ntw()+'/4',cost(BT.tower.c),btn('b:tower',ntw()<4?'Построить':'Макс.',can(BT.tower.c)&&ntw()<4)):lockI('Башня','после 3-го дома');
- h+=n>=2?item('Стены','Не пропускают зомби, игрока и жителей. Проход делайте воротами · прочность 30','<span class="cost"><i'+(inv.stone>=3?'':' class="no"')+'>🪨 3 за клетку</i></span>',btn('b:wall','Строить',can(BT.wall.c))):lockI('Стены','после 2-го дома');
- h+=n>=2?item('Ворота','Деревянные, прочность 36. Открываются, когда рядом игрок, житель или солдат. Зомби их ломают','<span class="cost"><i'+(inv.wood>=6?'':' class="no"')+'>🪵 6 за клетку</i></span>',btn('b:gate','Строить',can(BT.gate.c))):lockI('Ворота','после 2-го дома');
- h+=head('Мосты');h+=item('Мост','Настил через воду. Строится от берега, клетка за клеткой. Зомби по мосту тоже ходят, при необходимости снесите его','<span class="cost"><i'+(inv.wood>=2?'':' class="no"')+'>🪵 2 за клетку</i></span>',btn('b:bridge','Строить',inv.wood>=2));h+=head('Снос');h+=item('Снос','Нажмите на здание, стену, мост, пень или яму: 1 🪙 за каждое','<span class="cost"><i'+(inv.coin>=1?'':' class="no"')+'>🪙 1</i></span>',btn('b:demo','Снос',inv.coin>=1));
+ h+=n>=3?item('Башня','Стреляет по разбойникам · '+ntw()+'/4',cost(BT.tower.c),btn('b:tower',ntw()<4?'Построить':'Макс.',can(BT.tower.c)&&ntw()<4)):lockI('Башня','после 3-го дома');
+ h+=n>=2?item('Стены','Не пропускают разбойников, игрока и жителей. Проход делайте воротами · прочность 30','<span class="cost"><i'+(inv.stone>=3?'':' class="no"')+'>🪨 3 за клетку</i></span>',btn('b:wall','Строить',can(BT.wall.c))):lockI('Стены','после 2-го дома');
+ h+=n>=2?item('Ворота','Деревянные, прочность 36. Открываются, когда рядом игрок, житель или солдат. Разбойники их ломают','<span class="cost"><i'+(inv.wood>=6?'':' class="no"')+'>🪵 6 за клетку</i></span>',btn('b:gate','Строить',can(BT.gate.c))):lockI('Ворота','после 2-го дома');
+ h+=head('Мосты и порты');h+=item('Порт','Строится на мосту (площадка 2×2 из мостов у открытой воды). Тут за монеты строят корабль (один на порт), которым вы управляете сами','<span class="cost"><i'+(inv.wood>=30?'':' class="no"')+'>🪵 30</i><i'+(inv.stone>=16?'':' class="no"')+'>🪨 16</i></span>',btn('b:port','Строить',can(BT.port.c)));h+=item('Мост','Настил через воду. Строится от берега, клетка за клеткой. Разбойники по мосту тоже ходят, при необходимости снесите его','<span class="cost"><i'+(inv.wood>=2?'':' class="no"')+'>🪵 2 за клетку</i></span>',btn('b:bridge','Строить',inv.wood>=2));h+=head('Снос');h+=item('Снос','Нажмите на здание, стену, мост, пень или яму: 1 🪙 за каждое','<span class="cost"><i'+(inv.coin>=1?'':' class="no"')+'>🪙 1</i></span>',btn('b:demo','Снос',inv.coin>=1));
  return h}
 
 function vVil(){
@@ -404,15 +480,15 @@ function vHelp(){
   +'<li><b>Добывать:</b> нажмите на дерево, камень или железную руду.</li>'
   +'<li><b>Строить:</b> сначала ратуша (налоги), затем дома, фермы и казармы.</li>'
   +'<li><b>Оружие:</b> железо нужно для кузницы. Подойдите к ней и нажмите на неё.</li>'
-  +'<li><b>Ночью</b> идут зомби, оружие бьёт их само. Жители прячутся в домах и там в безопасности.</li>'
-  +'<li><b>Зомби</b> идут к цели через любой проход, а если прохода нет, ломают одну стену.</li>'
-  +'<li><b>Стены</b> не пропускают никого. <b>Ворота</b> из дерева открываются для игрока, жителей и солдат, а зомби их ломают.</li>'
+  +'<li><b>Ночью</b> нападают разбойники, оружие бьёт их само. Жители прячутся в домах и там в безопасности.</li>'
+  +'<li><b>Разбойники</b> идут к цели через любой проход, а если прохода нет, ломают одну стену.</li>'
+  +'<li><b>Стены</b> не пропускают никого. <b>Ворота</b> из дерева открываются для игрока, жителей и солдат, а разбойники их ломают.</li>'
   +'<li><b>Снос:</b> вкладка «Строить» → «Снос», затем нажмите на здание, стену, мост, пень или яму (1 🪙). Так освобождается место под стройку.</li>'
+  +'<li><b>Порты и корабли:</b> постройте мост до другого берега, затем порт (площадка 2×2 на мосту). В порту за монеты строят корабль (в порту стоит один). Нажмите на порт → «Отплыть», затем нажимайте на воду, куда плыть. Чтобы причалить, нажмите на свой порт.</li>'
   +'<li><b>Мосты:</b> «Строить» → «Мост», затем нажимайте на воду от берега (2 🪵 за клетку).</li>'
   +'<li><b>Карта Евразии:</b> нажмите на мини-карту в углу, чтобы открыть её целиком. Жёлтые точки на ней: другие игроки.</li>'
   +'<li>Моря непроходимы: идите вдоль берега или стройте мосты.</li>'
-  +'<li><b>Онлайн:</b> другие игроки видны в мире вместе с их деревнями. Зомби и добыча у каждого свои.</li>'
-  +'<li>Кнопка 🍄 / 🛡️ вверху снимает и надевает броню.</li>'
+  +'<li><b>Онлайн:</b> другие игроки видны в мире вместе с их деревнями. Разбойники и добыча у каждого свои.</li>'
   +'<li>Потяните полоску над вкладками или нажмите на неё, чтобы развернуть панель.</li></ul>'}
 
 function vForge(){
@@ -427,14 +503,14 @@ function vForge(){
 
 function render(){
  hudU();
- const cur=fo?'forge':tab;
- tabsEl.innerHTML=(fo?'<button class="tab on" data-t="forge">⚒ Кузница</button>':'')+TABS.map(([k,n])=>'<button class="tab'+(!fo&&k==tab?' on':'')+'" data-t="'+k+'">'+n+'</button>').join('');
+ const cur=po?'port':fo?'forge':tab;
+ tabsEl.innerHTML=(po?'<button class="tab on" data-t="forge">⚓ Порт</button>':fo?'<button class="tab on" data-t="forge">⚒ Кузница</button>':'')+TABS.map(([k,n])=>'<button class="tab'+(!(fo||po)&&k==tab?' on':'')+'" data-t="'+k+'">'+n+'</button>').join('');
  sheetEl.classList.toggle('open',sheetOpen);
  const st=ui.scrollTop,key=cur+(build?'!'+build:'');
- ui.innerHTML=fo?vForge():tab=='build'?vBuild():tab=='vil'?vVil():tab=='mkt'?vMkt():vHelp();
+ ui.innerHTML=po?vPort():fo?vForge():tab=='build'?vBuild():tab=='vil'?vVil():tab=='mkt'?vMkt():vHelp();
  ui.scrollTop=key==lastView?st:0;lastView=key}
 
-tabsEl.addEventListener('click',e=>{const b=e.target.closest('[data-t]');if(!b||b.dataset.t=='forge')return;fo=false;build=null;tab=b.dataset.t;render()});
+tabsEl.addEventListener('click',e=>{const b=e.target.closest('[data-t]');if(!b||b.dataset.t=='forge')return;fo=false;po=null;build=null;tab=b.dataset.t;render()});
 document.getElementById('grip').addEventListener('click',()=>{sheetOpen=!sheetOpen;render()});
 
 ui.addEventListener('click',e=>{const el=e.target.closest('[data-a]');if(!el||el.disabled)return;const a=el.dataset.a;if(!a)return;const[k,id]=a.split(':');
@@ -446,37 +522,44 @@ ui.addEventListener('click',e=>{const el=e.target.closest('[data-a]');if(!el||el
  if(k=='eq'&&own[id])eq=id;
  if(k=='b'&&BT[id]&&(id=='demo'||(id=='hall'?!hallB():hallB()))){build=id;sheetOpen=false}
  if(k=='cancel')build=null;
- if(k=='close')fo=false;
+ if(k=='close'){fo=false;po=null}
+ if(k=='ship'&&po&&!hasShip(pkey(po))&&SHIPS.length<MAXSHIPS&&inv.coin>=shipCost()){inv.coin-=shipCost();SHIPS.push(newShip(pkey(po)));msg='Корабль построен!';msgT=2.5}
+ if(k=='depart'&&po)startSail(po)
  if(k=='mk'){const w=WPN.find(x=>x.id==id);if(!own[id]&&can(w.c)){pay(w.c);own[id]=1;eq=id}}
  if(k=='up'&&own[id]&&own[id]<5){const c=uc(own[id]);if(can(c)){pay(c);own[id]++}}
  render()});
 ui.addEventListener('contextmenu',e=>e.preventDefault());
 ['pointerdown','scroll','touchmove','wheel'].forEach(ev=>ui.addEventListener(ev,()=>{uiT=performance.now()},{passive:true}));
-function demolish(h){const i=HS.indexOf(h);if(i<0)return;HS.splice(i,1);for(let a=0;a<2;a++)for(let b=0;b<2;b++)hs.delete((h[0]+a)+','+(h[1]+b));
+function demolish(h){const i=HS.indexOf(h);if(i<0)return;wver++;
+ if(h[2]=='port'){const k=h[0]+','+h[1];for(let j=SHIPS.length-1;j>=0;j--)if(SHIPS[j].p==k&&!SHIPS[j].sail){SHIPS.splice(j,1);inv.coin+=30}if(po===h)po=null}HS.splice(i,1);for(let a=0;a<2;a++)for(let b=0;b<2;b++)hs.delete((h[0]+a)+','+(h[1]+b));
  if(h[2]=='forge'){fo=false;P.of=false}
  if(h[2]=='house'){const hs2=HS.filter(x=>x[2]=='house');let gone=0;for(let k=V.length-1;k>=0;k--){const v=V[k];if(v.h!==h)continue;const t=hs2.filter(x=>V.filter(u=>u.h===x).length<3)[0];if(t){v.h=t;v.arr=false}else{V.splice(k,1);gone++}}if(gone){msg='Жители остались без дома и ушли';msgT=4;hap=Math.max(0,hap-3*gone)}}
  wgT=0}
 cv.addEventListener('pointerdown',e=>{const r=cv.getBoundingClientRect(),wx=cam.x+(e.clientX-r.left)*W/r.width,wy=cam.y+(e.clientY-r.top)*H/r.height,tx=wx/T|0,ty=wy/T|0,sxp=(e.clientX-r.left)*W/r.width,syp=(e.clientY-r.top)*H/r.height;
  if(bigMap){bigMap=false;return}
+ if(SAIL&&!(sxp>=W-mmW()-10&&syp<=mmW()*NH/NW+14)){steer(tx,ty);return}
  {const mw=mmW(),mh=Math.round(mw*NH/NW),mx=W-mw-6;if(sxp>=mx-4&&sxp<=W&&syp>=2&&syp<=mh+12){bigMap=true;return}}
  if(build=='demo'){const b=HS.find(h=>tx>=h[0]&&tx<=h[0]+1&&ty>=h[1]&&ty<=h[1]+1),w=WA[tx+','+ty],ob=at[tx+','+ty],br=BR[tx+','+ty];
   if(!b&&!w&&!br&&!(ob&&ob.dead)){msg='Здесь нечего сносить';msgT=2}
   else if(inv.coin<1){msg='Для сноса нужна 1 монета';msgT=2}
   else if(b&&HS.length<=1){msg='Нельзя снести последнее здание';msgT=2}
+  else if(!b&&((w&&w.mine===false)||(!w&&br&&br.mine===false))){msg='Это построил другой игрок: снести может только он';msgT=3}
   else if(br&&!b&&!w&&onTile(tx,ty)){msg='На мосту кто-то стоит';msgT=2}
-  else{inv.coin-=1;if(w){hs.delete(tx+','+ty);delete WA[tx+','+ty];wgT=0}else if(b)demolish(b);else if(br)delBr(tx,ty);else rmO(tx+','+ty);msg='Снесено: −1 монета';msgT=2;render()}
+  else{inv.coin-=1;if(w){rmWall(tx+','+ty);if(shared())wDemo(tx,ty)}else if(b)demolish(b);else if(br){delBr(tx,ty);if(shared())wDemo(tx,ty)}else rmO(tx+','+ty);msg='Снесено: −1 монета';msgT=2;render()}
   return}
 
- if(build){const bt=BT[build];if(build=='bridge'){if(canBr(tx,ty)&&can(bt.c)){pay(bt.c);addBr(tx,ty);render()}else if(!can(bt.c)){msg='Не хватает дерева';msgT=2}else{msg='Мост строят на воде от берега или от другого моста';msgT=2}return}if(build=='wall'||build=='gate'){const ex=WA[tx+','+ty];if(build=='gate'&&ex&&!ex.g&&can(bt.c)){pay(bt.c);ex.g=true;ex.hp=ex.mx=36;wgT=0;render();return}if(!ex&&fr1(tx,ty)&&can(bt.c)){pay(bt.c);addW(tx,ty,build=='gate');render();return}}else if(free(tx,ty)&&can(bt.c)&&(build=='hall'||hallB())&&!(build=='house'&&nh()>=8)&&!(build=='hall'&&hallB())){pay(bt.c);addH(tx,ty,build);build=null;render();return}}
+ if(build){const bt=BT[build];if(build=='port'){if(portOk(tx,ty)&&can(bt.c)){pay(bt.c);addH(tx,ty,'port');build=null;msg='Порт построен';msgT=2.5;render()}else if(!can(bt.c)){msg='Не хватает ресурсов';msgT=2}else{msg='Порт строят на мосту: нужна площадка 2×2 из мостов у открытой воды';msgT=3}return}if(build=='bridge'){if(canBr(tx,ty)&&can(bt.c)){pay(bt.c);addBr(tx,ty);BR[tx+','+ty].mine=true;if(shared())wBuild('bridge',tx,ty,bt.c,()=>delBr(tx,ty));render()}else if(!can(bt.c)){msg='Не хватает дерева';msgT=2}else{msg='Мост строят на воде от берега или от другого моста';msgT=2}return}if(build=='wall'||build=='gate'){const ex=WA[tx+','+ty];if(build=='gate'&&ex&&!ex.g&&ex.mine!==false&&can(bt.c)){pay(bt.c);const oh=ex.hp;ex.g=true;ex.hp=ex.mx=36;wgT=0;if(shared())wBuild('gate',tx,ty,bt.c,()=>{if(WA[tx+','+ty]){ex.g=false;ex.mx=30;ex.hp=Math.min(oh,30);wgT=0}});render();return}if(!ex&&fr1(tx,ty)&&can(bt.c)){pay(bt.c);addW(tx,ty,build=='gate');WA[tx+','+ty].mine=true;if(shared()){const kk=tx+','+ty;wBuild(build,tx,ty,bt.c,()=>{if(WA[kk])rmWall(kk)})}render();return}if(ex&&ex.mine===false){msg='Здесь стена другого игрока';msgT=2;return}}else if(free(tx,ty)&&can(bt.c)&&(build=='hall'||hallB())&&!(build=='house'&&nh()>=8)&&!(build=='hall'&&hallB())){pay(bt.c);addH(tx,ty,build);build=null;render();return}}
  const fh=HS.find(h=>h[2]=='forge'&&tx>=h[0]&&tx<=h[0]+1&&ty>=h[1]&&ty<=h[1]+1);
- if(fh){P.tg=null;P.tx=fh[0]*T+16;P.ty=(fh[1]+2)*T+8;P.of=true;return}
- P.of=false;if(fo){fo=false;render()}
+ if(fh){P.tg=null;P.tx=fh[0]*T+16;P.ty=(fh[1]+2)*T+8;P.of=true;P.pp=null;po=null;return}
+ const ph=HS.find(h=>h[2]=='port'&&tx>=h[0]&&tx<=h[0]+1&&ty>=h[1]&&ty<=h[1]+1);
+ if(ph){P.tg=null;P.tx=ph[0]*T+16;P.ty=ph[1]*T+16;P.pp=ph;P.of=false;if(fo){fo=false;render()}return}
+ P.of=false;P.pp=null;if(fo||po){fo=false;po=null;render()}
  const o=at[tx+','+ty];
  if(o&&!o.dead){P.tg=o;P.tx=o.x*T+8;P.ty=o.y*T+8}else{P.tg=null;P.tx=wx;P.ty=wy}});
 const pay=c=>{inv.wood-=c[0];inv.stone-=c[1];inv.iron-=c[2]||0};
 const wdm=id=>{const w=WPN.find(x=>x.id==id);return Math.round(w.d*(1+.2*(own[id]-1)))};
 const nightF=()=>{const p=cyc%180;return p<112?0:p<120?(p-112)/8:p<172?1:(180-p)/8};
-const sHp=()=>30+5*Math.min(8,cyc/180|0);  /* здоровье солдата = здоровью зомби */
+const sHp=()=>30+5*Math.min(8,cyc/180|0);  /* здоровье солдата = здоровью разбойника */
 const newSoldier=()=>{const b=HS.find(h=>h[2]=='barracks')||HS[0];return{x:b[0]*T+16,y:b[1]*T+38,hp:sHp(),mh:sHp(),ct:0,fl:false,mv:false}};
 function vil(dt){const hs2=HS.filter(h=>h[2]=='house'),nt=nightF()>.3,nm=h=>V.filter(v=>v.h===h).length;
  arrT-=dt;if(arrT<=0&&hs2.length){arrT=22;const h=hs2.filter(h=>nm(h)<3).sort((a,b)=>nm(a)-nm(b))[0];
@@ -487,7 +570,7 @@ function vil(dt){const hs2=HS.filter(h=>h[2]=='house'),nt=nightF()>.3,nm=h=>V.fi
   const dx=v.tx-v.x,dy=v.ty-v.y,m=Math.hypot(dx,dy);v.mv=m>2;
   if(m>2){fStep(v,v.tx,v.ty,v.arr?24:16,dt);v.fl=dx<0}
   v.hide=!v.arr&&nt&&m<=4});
- for(let i=V.length-1;i>=0;i--)if(V[i].hp<=0){V.splice(i,1);hap=Math.max(0,hap-8);msg='Зомби убили жителя!';msgT=4}}
+ for(let i=V.length-1;i>=0;i--)if(V[i].hp<=0){V.splice(i,1);hap=Math.max(0,hap-8);msg='Разбойники убили жителя!';msgT=4}}
 function village(dt){vt-=dt;if(vt>0)return;vt=1;
  const n=V.length,tg=40+(inv.food>n*3?15:inv.food>0?0:-30)+Math.min(25,def())+(hallB()?5:0)-Math.min(30,vthr*6);vthr=0;
  hap+=(Math.max(0,Math.min(100,tg))-hap)*.06;
@@ -504,13 +587,13 @@ function army(dt){
   if(!tg)a.hp=Math.min(a.mh,a.hp+dt*.5)});
  for(let i=A.length-1;i>=0;i--)if(A[i].hp<=0){A.splice(i,1);msg='Солдат погиб';msgT=3}}
 function misc(dt){
- for(const k in WA)if(WA[k].hp<=0){hs.delete(k);delete WA[k];wgT=0}
+ for(const k in WA)if(WA[k].hp<=0){whq[k]=[WA[k].x,WA[k].y,0];rmWall(k)}
  const fr=[P].concat(A,V.filter(v=>!v.hide));
  for(const k in WA){const w=WA[k];if(!w.g)continue;const cx=w.x*T+8,cy=w.y*T+8;let nr=false;for(const u of fr)if(Math.hypot(u.x-cx,u.y-cy)<=26){nr=true;break}if(nr)w.ot=.35;else w.ot=(w.ot||0)-dt;w.open=w.ot>0}
  HS.forEach(h=>{if(h[2]!='tower')return;h[5]=(h[5]||0)-dt;if(h[5]>0)return;const ox=h[0]*T+16,oy=h[1]*T+6;let tg=null,td=110;Z.forEach(z=>{const d=Math.hypot(z.x-ox,z.y-oy);if(d<td){td=d;tg=z}});
   if(tg){h[5]=1.1;tg.hp-=6;SH.push({x1:ox,y1:oy,x2:tg.x,y2:tg.y,t:.15})}});
  for(let i=SH.length-1;i>=0;i--){SH[i].t-=dt;if(SH[i].t<=0)SH.splice(i,1)}}
-/* поиск пути зомби: если к цели есть проход (хоть одна дыра в стене) — идут через него, стены не ломают */
+/* поиск пути разбойников: если к цели есть проход (хоть одна дыра в стене) — идут через него, стены не ломают */
 const WG=new Uint8Array(NW*NH),FG=new Uint8Array(NW*NH),PV=new Int32Array(NW*NH),PQ=new Int32Array(NW*NH),TS=new Int32Array(NW*NH),VS=new Int32Array(NW*NH),TO=new Array(NW*NH);let wgT=0,bst=0;
 function wgBuild(){WG.set(WAT);FG.set(WAT);for(const k in WA){const w=WA[k];if(w.hp>0&&w.x>=0&&w.y>=0&&w.x<NW&&w.y<NH){WG[w.y*NW+w.x]=1;if(!w.g)FG[w.y*NW+w.x]=1}}}
 const cellOf=o=>Math.max(0,Math.min(NH-1,o.y/T|0))*NW+Math.max(0,Math.min(NW-1,o.x/T|0));
@@ -563,8 +646,8 @@ function tick(dt){
  cyc+=dt;{const pr=HS.reduce((a,h)=>a+(h[2]=='farm'?(h[4]||1)*FR/60:0),0),cn=(V.length*2+A.length*3)/60;inv.food=Math.max(0,Math.min(Math.max(cap(),inv.food),inv.food+(pr-cn)*dt));const s2=inv.food<=0&&cn>pr;if(s2&&!starve){msg='Деревня голодает! Нужны фермы';msgT=4}starve=s2;P.fr=(P.fr||0)-dt;if(P.fr<=0){P.fr=1;hudU()}}
  const nf=nightF(),night=nf>.5;
  if(msgT>0)msgT-=dt;if(hurt>0)hurt-=dt;if(sw>0)sw-=dt;atk-=dt;zt-=dt;
- if(zt<=0){zt=night?6+Math.random()*5:22+Math.random()*16;
-  if(Z.length<(night?6:2)){const zh=30+5*Math.min(8,cyc/180|0);for(let k=0;k<10;k++){const a=Math.random()*6.283,d=170+Math.random()*60,x=P.x+Math.cos(a)*d,y=P.y+Math.sin(a)*d;if(x>8&&y>8&&x<NW*T-8&&y<NH*T-8&&isLand(x/T|0,y/T|0)){Z.push({x,y,hp:zh,mh:zh,ct:0,fl:false,n:night});break}}}}
+ if(zt<=0){zt=night?6+Math.random()*5:22+Math.random()*16;if(SAIL)zt=5;else 
+  if(Z.length<(night?6:2)){const zh=30+5*Math.min(8,cyc/180|0);for(let k=0;k<10;k++){const a=Math.random()*6.283,d=170+Math.random()*60,x=P.x+Math.cos(a)*d,y=P.y+Math.sin(a)*d;if(x>8&&y>8&&x<NW*T-8&&y<NH*T-8&&isLand(x/T|0,y/T|0)){Z.push({id:++zid,x,y,hp:zh,mh:zh,ct:0,fl:false,n:night});break}}}}
  let near=null,nd=1e9;
  wgT-=dt;if(wgT<=0){wgBuild();wgT=.2}
  for(let i=Z.length-1;i>=0;i--){const z=Z[i],dp=Math.hypot(P.x-z.x,P.y-z.y);
@@ -587,29 +670,45 @@ function tick(dt){
   const dx=gx-z.x,dy=gy-z.y,m=Math.hypot(dx,dy);
   if(Math.abs(dx)>1)z.fl=dx<0;
   if(m>stop){const s=Math.min(m,(night?38:29)*dt),nx=z.x+dx/m*s,ny=z.y+dy/m*s,ins=wallAt(z.x,z.y),wd=ins?null:wallAt(nx,ny);
-   if(!walk(nx/T|0,ny/T|0)){}else if(!wd){z.x=nx;z.y=ny}else{if(!wallAt(nx,z.y))z.x=nx;else if(!wallAt(z.x,ny))z.y=ny;if(z.mode=='wall')wd.hp-=dt*2}}
+   if(!walk(nx/T|0,ny/T|0)){}else if(!wd){z.x=nx;z.y=ny}else{if(!wallAt(nx,z.y))z.x=nx;else if(!wallAt(z.x,ny))z.y=ny;if(z.mode=='wall'){wd.hp-=dt*2;wd.dirty=1}}}
   else if(z.mode=='path'&&!z.go)z.pt=0;
   z.ct-=dt;
   if(z.ct<=0){
    if(nd2<=13){z.ct=1;if(nt=='p'){hp-=armor?2:3;hurt=.3}else{nu.hp-=3;if(nt=='v')vthr+=1}}
-   else if(z.mode=='wall'&&z.tw&&z.tw.hp>0&&Math.hypot(z.tw.x*T+8-z.x,z.tw.y*T+8-z.y)<=16){z.ct=1;z.tw.hp-=2}}
+   else if(z.mode=='wall'&&z.tw&&z.tw.hp>0&&Math.hypot(z.tw.x*T+8-z.x,z.tw.y*T+8-z.y)<=16){z.ct=1;z.tw.hp-=2;z.tw.dirty=1}}
   if(dp<nd){nd=dp;near=z}}
  const w=eq&&own[eq]?WPN.find(x=>x.id==eq):null,rg=w&&w.id=='bow'?58:26;
- if(near&&nd<=rg&&atk<=0){atk=w&&w.id=='axe'?.9:.6;sw=.18;P.fl=near.x<P.x;near.hp-=w?wdm(w.id):3;const k=nd||1;near.x+=(near.x-P.x)/k*4;near.y+=(near.y-P.y)/k*4}
+ for(const z of RZ.values()){const d=Math.hypot(P.x-z.x,P.y-z.y);if(z.hp>0&&d<nd){nd=d;near=z}}
+ if(BOSS.on&&BOSS.dead<=0){const d=Math.max(1,Math.hypot(P.x-BOSS.x,P.y-BOSS.y)-30);if(d<nd){nd=d;near=BOSS}if(Math.hypot(P.x-BOSS.x,P.y-BOSS.y)<44){BOSS.sp=(BOSS.sp||0)+dt;if(BOSS.sp>1){BOSS.sp=0;hp-=1;hurt=.3}}}
+ if(near&&nd<=rg&&atk<=0){atk=w&&w.id=='axe'?.9:.6;sw=.18;P.fl=near.x<P.x;{const dm=w?wdm(w.id):3;near.hp-=dm;if(near===BOSS){BOSS.bd+=Math.round(dm);BOSS.hp-=dm;BOSS.hit=.15;if(!shared()){BOSS.bd=0;if(BOSS.hp<=0){BOSS.hp=0;BOSS.dead=3600+Math.random()*7200;inv.coin+=100;msg='Гриб-босс повержен! +100 монет';msgT=5;render()}}}else if(near.own&&hitq.length<30)hitq.push([near.own,near.id,Math.max(1,Math.round(dm))])}if(near!==BOSS){const k=nd||1;near.x+=(near.x-P.x)/k*4;near.y+=(near.y-P.y)/k*4}}
  if(hp<MH&&hurt<=0&&nd>120&&!starve){P.rg=(P.rg||0)+dt;if(P.rg>4){P.rg=0;hp++}}
  if(hp<=0){const l=[];['wood','stone','iron'].forEach((k,i)=>{const n=Math.ceil(inv[k]*.15);inv[k]-=n;l.push(n+['🪵','🪨','🔩'][i])});
   msg='Вы погибли! Потеряно: '+l.join(' ');msgT=4;hp=MH;Z.length=0;const h=HS[0];P.x=P.tx=h[0]*T+16;P.y=P.ty=(h[1]+3)*T;P.tg=null;P.of=false;render()}}
 function update(dt){
- gt+=dt;if(P.fx>0)P.fx-=dt;WORLD.players.forEach(p=>{const age=Math.min(.45,(performance.now()-(p.ut||0))/1000),ex=p.x+(p.vx||0)*age,ey=p.y+(p.vy||0)*age,k=Math.min(1,dt*8),dx=ex-p.rx,dy=ey-p.ry;faceUpd(p,dx,dy);p.rx+=dx*k;p.ry+=dy*k;p.mv=Math.hypot(dx,dy)>1.5;if(Math.abs(dx)>1.5)p.fl=dx<0});try{tick(dt)}catch(e){console.error(e)}try{army(dt);vil(dt);village(dt);misc(dt)}catch(e){console.error(e)}
+ if(SAIL){gt+=dt;sailTick(dt);return}
+ gt+=dt;if(P.fx>0)P.fx-=dt;WORLD.players.forEach(p=>{const age=Math.min(.6,(performance.now()-(p.ut||0))/1000),ex=p.x+(p.vx||0)*age,ey=p.y+(p.vy||0)*age,k=Math.min(1,dt*10),dx=ex-p.rx,dy=ey-p.ry;if(Math.abs(dx)+Math.abs(dy)>220){p.rx=ex;p.ry=ey;return}faceUpd(p,dx,dy);p.rx+=dx*k;p.ry+=dy*k;p.mv=Math.hypot(dx,dy)>1.5;if(Math.abs(dx)>1.5)p.fl=dx<0});try{tick(dt)}catch(e){console.error(e)}try{army(dt);vil(dt);village(dt);misc(dt)}catch(e){console.error(e)}
+ if(BOSS.dead>0){BOSS.dead-=dt;if(BOSS.dead<=0&&!shared()){BOSS.dead=0;BOSS.hp=BOSS.mh}}
+ for(const[k,z]of RZ){if(z.hp<=0){RZ.delete(k);continue}const q=Math.min(1,dt*8);z.x+=(z.tx-z.x)*q;z.y+=(z.ty-z.y)*q}
  O.forEach(o=>{if(o.dead&&gt>o.back){o.dead=false;o.hp=D[o.t].h;mmD=true}if(o.hit>0)o.hit-=dt});
  const tg=P.tg;
  if(tg&&Math.hypot(tg.x*T+8-P.x,tg.y*T+8-P.y)<=16){P.tx=P.x;P.ty=P.y;P.mv=false;P.fl=tg.x*T+8<P.x;P.ht-=dt;
-  if(P.ht<=0){P.ht=.6/(hap>=70?1.25:hap<=30?.8:1);tg.hit=.12;if(--tg.hp<=0){inv[D[tg.t].g]+=D[tg.t].n;tg.dead=true;mmD=true;tg.back=gt+45;P.tg=null;render()}}return}
+  if(P.ht<=0){P.ht=.6/(hap>=70?1.25:hap<=30?.8:1);tg.hit=.12;if(--tg.hp<=0){tg.dead=true;mmD=true;tg.back=gt+45;P.tg=null;harvest(tg)}}return}
  const dx=P.tx-P.x,dy=P.ty-P.y,m=Math.hypot(dx,dy);P.mv=m>2;if(m>2&&Math.abs(dx)>1)P.fl=dx<0;
  if(m>2){P.mv=fStep(P,P.tx,P.ty,80*(starve?.7:1),dt)}
- if(P.of&&Math.hypot(P.tx-P.x,P.ty-P.y)<=3){P.of=false;fo=true;sheetOpen=true;render()}
+ if(P.of&&Math.hypot(P.tx-P.x,P.ty-P.y)<=3){P.of=false;fo=true;po=null;sheetOpen=true;render()}
+ if(P.pp&&Math.hypot(P.tx-P.x,P.ty-P.y)<=3){po=P.pp;P.pp=null;fo=false;sheetOpen=true;render()}
  P.x=Math.max(8,Math.min(NW*T-8,P.x));P.y=Math.max(8,Math.min(NH*T-8,P.y))}
 const DK='#1d2420';
+function port(sx,sy){
+ R('rgba(0,0,0,.25)',sx+1,sy+30,32,3);
+ R('#2a1a0a',sx,sy+4,32,27);R('#b07c44',sx+1,sy+5,30,25);
+ for(let i=0;i<5;i++)R('#8f5e2e',sx+1,sy+8+i*5,30,1);
+ R('#d09a5c',sx+1,sy+5,30,1);
+ [[0,2],[28,2],[0,26],[28,26]].forEach(([a,b])=>{R('#2a1a0a',sx+a,sy+b,4,6);R('#6b4a2a',sx+a+1,sy+b+1,2,4);R('#9a6a3a',sx+a+1,sy+b+1,1,2)});
+ R('#2a1a0a',sx+5,sy+10,10,10);R('#c48a4a',sx+6,sy+11,8,8);R('#8a5a2d',sx+6,sy+14,8,1);R('#8a5a2d',sx+9,sy+11,1,8);
+ R('#2a1a0a',sx+11,sy+18,9,8);R('#d29a58',sx+12,sy+19,7,6);R('#8a5a2d',sx+12,sy+22,7,1);
+ R('#2a1a0a',sx+22,sy+17,7,9);R('#6b4a2a',sx+23,sy+18,5,7);R('#9a6a3a',sx+23,sy+20,5,1);R('#9a6a3a',sx+23,sy+23,5,1);
+ R('#4a2a12',sx+21,sy-6,2,20);R('#d6402f',sx+23,sy-5,8,5);R('#a8281c',sx+23,sy-1,8,1);R('#fff',sx+25,sy-4,3,1);R('#fff',sx+26,sy-4,1,3)}
 function house(sx,sy,q){
  const w=WL[q],r=RF[q];
  R('rgba(0,0,0,.25)',sx+1,sy+30,32,3);
@@ -713,7 +812,7 @@ function draw(){
   ctx.drawImage(S[o.t],sx,sy);
   if(P.tg===o&&o.hp<D[o.t].h){R('#1d2420',sx,sy-6,16,3);R('#ffd45c',sx,sy-6,16*o.hp/D[o.t].h,3)}});
  Object.values(WA).forEach(w=>{const sx=w.x*T-cam.x,sy=w.y*T-cam.y;if(sx<-T||sy<-T||sx>W||sy>H)return;ctx.drawImage(w.g?(w.open?S.gateO:S.gate):S.wall,sx,sy);if(w.hp<w.mx){R('#1d2420',sx+2,sy-3,12,3);R('#e0463a',sx+3,sy-2,10*Math.max(0,w.hp)/w.mx,1)}if(w.hp<w.mx*.6){R('#1d2420',sx+4,sy+6,1,6);R('#1d2420',sx+5,sy+11,3,1);R('#1d2420',sx+10,sy+7,1,5)}});
- const drawB=([x,y,t,i,l])=>{const sx=x*T-cam.x,sy=y*T-cam.y;if(sx<-48||sy<-48||sx>W+48||sy>H+48)return;if(t=='forge')forge(sx,sy);else if(t=='farm')farm(sx,sy,l||1);else if(t=='barracks')barracks(sx,sy);else if(t=='granary')granary(sx,sy);else if(t=='tower')tower(sx,sy);else if(t=='hall')hall(sx,sy);else house(sx,sy,i%6)};
+ const drawB=([x,y,t,i,l])=>{const sx=x*T-cam.x,sy=y*T-cam.y;if(sx<-48||sy<-48||sx>W+48||sy>H+48)return;if(t=='port')port(sx,sy);else if(t=='forge')forge(sx,sy);else if(t=='farm')farm(sx,sy,l||1);else if(t=='barracks')barracks(sx,sy);else if(t=='granary')granary(sx,sy);else if(t=='tower')tower(sx,sy);else if(t=='hall')hall(sx,sy);else house(sx,sy,i%6)};
  WORLD.players.forEach(p=>p.hs.forEach(drawB));HS.forEach(drawB);
  WORLD.players.forEach(p=>{const hl=p.hs.find(h=>h[2]=='hall');
   if(hl){const lx=hl[0]*T-cam.x+16,ly=hl[1]*T-cam.y-16;if(lx>-60&&lx<W+60&&ly>-20&&ly<H+20)lab(p.name+(p.online?'':' (офлайн)'),lx,ly,p.online?'#ffe9a8':'#9aa6b2')}
@@ -724,10 +823,18 @@ function draw(){
   lab(p.name,ax,ay-22,'#fff')});
  V.forEach(v=>{if(v.hide)return;const vx=Math.round(v.x-cam.x),vy=Math.round(v.y-cam.y);if(vx<-16||vy<-16||vx>W+16||vy>H+16)return;
   R('rgba(0,0,0,.3)',vx-5,vy+6,10,3);ctx.drawImage((v.fl?S.vL:S.v)[v.c],vx-8,vy-8+(v.mv&&(gt*8|0)%2?-1:0));if(v.hp<v.mh){R('#1d2420',vx-6,vy-12,12,3);R('#e0463a',vx-6,vy-12,12*Math.max(0,v.hp)/v.mh,3)}});
+ SHIPS.forEach(sh=>{const q=shipXY(sh),sx=Math.round(q.x-cam.x),sy=Math.round(q.y-cam.y);if(sx<-24||sy<-24||sx>W+24||sy>H+24)return;const bb=Math.round(Math.sin(gt*2+sh.k));R('rgba(0,0,0,.22)',sx-9,sy+3,18,3);ctx.drawImage(sh.fl?S.shipL:S.ship,sx-10,sy-16+bb)});
  A.forEach(a=>{const ax=Math.round(a.x-cam.x),ay=Math.round(a.y-cam.y),b=a.mv&&(gt*10|0)%2?-1:0;if(ax<-16||ay<-16||ax>W+16||ay>H+16)return;
   R('rgba(0,0,0,.3)',ax-6,ay+6,12,3);ctx.drawImage(a.fl?S.sdL:S.sd,ax-8,ay-8+b);const px=ax+(a.fl?-6:5);R('#a8743a',px,ay-11+b,1,18);R('#1d2420',px-1,ay-15+b,3,4);R('#e6edf3',px,ay-14+b,1,2);
   if(a.hp<a.mh){R('#1d2420',ax-8,ay-14,16,3);R('#4aa6ff',ax-8,ay-14,16*a.hp/a.mh,3)}});
  Z.forEach(z=>{const zx=Math.round(z.x-cam.x),zy=Math.round(z.y-cam.y),bb=(gt*6+z.x)%2<1?0:-1;if(zx<-16||zy<-16||zx>W+16||zy>H+16)return;
+  R('rgba(0,0,0,.3)',zx-8,zy+6,16,3);ctx.drawImage(z.fl?S.zBL:S.zB,zx-10,zy-12+bb);
+  if(z.hp<z.mh){R('#1d2420',zx-10,zy-17,20,3);R('#e0463a',zx-10,zy-17,20*z.hp/z.mh,3)}});
+ if(BOSS.on&&BOSS.dead<=0){const bx=Math.round(BOSS.x-cam.x),by=Math.round(BOSS.y-cam.y);if(bx>-80&&by>-90&&bx<W+80&&by<H+60){const sh=BOSS.hit>0?(BOSS.hit-=.016,1):0,s=Math.sin(gt*2)*1.5;
+  R('rgba(0,0,0,.3)',bx-30,by+22,60,8);R('#efe3c8',bx-10+sh,by-2,20,26);R('#cdbd9a',bx+2+sh,by-2,8,26);R('#a8281c',bx-34+sh,by-34+s,68,34);R('#c8362a',bx-28+sh,by-40+s,56,10);R('#8a1f16',bx-34+sh,by-8+s,68,6);
+  [[-22,-30,9],[2,-36,10],[18,-26,8],[-8,-18,7],[24,-14,5],[-28,-14,5]].forEach(c=>R('#fff',bx+c[0]+sh,by+c[1]+s,c[2],c[2]));R('#1d2420',bx-12+sh,by+4,4,5);R('#1d2420',bx+8+sh,by+4,4,5);
+  {const tx=Math.max(0,Math.ceil(BOSS.hp))+' / '+BOSS.mh;ctx.save();ctx.font='8px "Press Start 2P",monospace';ctx.textBaseline='top';ctx.textAlign='center';const tw=ctx.measureText(tx).width;R('rgba(0,0,0,.7)',bx-tw/2-4,by-56,tw+8,13);ctx.fillStyle='#ff6b5e';ctx.fillText(tx,bx,by-53);ctx.restore()}}}
+ RZ.forEach(z=>{const zx=Math.round(z.x-cam.x),zy=Math.round(z.y-cam.y),bb=(gt*6+z.x)%2<1?0:-1;if(zx<-16||zy<-16||zx>W+16||zy>H+16)return;
   R('rgba(0,0,0,.3)',zx-8,zy+6,16,3);ctx.drawImage(z.fl?S.zBL:S.zB,zx-10,zy-12+bb);
   if(z.hp<z.mh){R('#1d2420',zx-10,zy-17,20,3);R('#e0463a',zx-10,zy-17,20*z.hp/z.mh,3)}});
  SH.forEach(s=>{ctx.strokeStyle='rgba(255,230,140,.95)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(Math.round(s.x1-cam.x),Math.round(s.y1-cam.y));ctx.lineTo(Math.round(s.x2-cam.x),Math.round(s.y2-cam.y));ctx.stroke()});
@@ -760,51 +867,62 @@ const ov=document.getElementById('ov'),initData=()=>(window.Telegram&&Telegram.W
 const overlay=(t,b,f)=>{ov.style.display='flex';ov.innerHTML='<div>'+t+'</div>'+(b?'<button id="ovb">'+b+'</button>':'');if(b)document.getElementById('ovb').onclick=f};
 const tgWait=()=>new Promise(res=>{const t0=Date.now();(function f(){if(initData()||Date.now()-t0>4000)res();else setTimeout(f,100)})()});
 async function api(action,data,keep){const r=await fetch(API,{method:'POST',keepalive:!!keep,headers:{'Content-Type':'application/json'},body:JSON.stringify({initData:initData(),action,sid:SID,data})});let j={};try{j=await r.json()}catch(e){}return{s:r.status,j}}
-const snap=()=>({v:3,map:'eu1',home:HOME.i,inv,HS:HS.map(h=>[h[0],h[1],h[2],h[4]]),own,armor,eq,cyc,army:A.length,vil:V.length,hap:Math.round(hap),walls:Object.values(WA).map(w=>[w.x,w.y]),bridges:Object.values(BR).map(b=>[b.x,b.y]),gates:Object.values(WA).filter(w=>w.g).map(w=>[w.x,w.y]),x:Math.round(P.x),y:Math.round(P.y)});
+const savePos=()=>{if(SAIL){const h=portAt(SAIL.p);if(h)return[h[0]*T+16,h[1]*T+16]}return[P.x,P.y]};
+const snap=()=>({v:3,map:'eu1',home:HOME.i,inv,HS:HS.map(h=>[h[0],h[1],h[2],h[4]]),own,armor,eq,cyc,army:A.length,vil:V.length,hap:Math.round(hap),walls:shared()?[]:Object.values(WA).map(w=>[w.x,w.y]),bridges:shared()?[]:Object.values(BR).map(b=>[b.x,b.y]),ships:SHIPS.map(u=>u.p.split(',').map(Number)),gates:shared()?[]:Object.values(WA).filter(w=>w.g).map(w=>[w.x,w.y]),x:Math.round(savePos()[0]),y:Math.round(savePos()[1])});
 function apply(d){try{if(!d||!Array.isArray(d.HS)||d.v!==3||d.map!=='eu1')return;
  const num=(v,lo,hi,df)=>typeof v=='number'&&isFinite(v)?Math.max(lo,Math.min(hi,v)):df,ok=Number.isInteger;
- const hl=d.HS.filter(h=>Array.isArray(h)&&['house','farm','forge','barracks','granary','tower','hall'].includes(h[2])&&ok(h[0])&&ok(h[1])&&h[0]>=0&&h[1]>=0&&h[0]<NW-1&&h[1]<NH-1&&isLand(h[0],h[1])&&isLand(h[0]+1,h[1]+1));
+ const bset=new Set((Array.isArray(d.bridges)?d.bridges:[]).filter(b=>Array.isArray(b)&&ok(b[0])&&ok(b[1])).map(b=>b[0]+','+b[1]));
+ const hl=d.HS.filter(h=>Array.isArray(h)&&['house','farm','forge','barracks','granary','tower','hall','port'].includes(h[2])&&ok(h[0])&&ok(h[1])&&h[0]>=0&&h[1]>=0&&h[0]<NW-1&&h[1]<NH-1&&(h[2]=='port'?(API||[0,1].every(a=>[0,1].every(b=>bset.has((h[0]+a)+','+(h[1]+b))))):isLand(h[0],h[1])&&isLand(h[0]+1,h[1]+1)));
  if(!hl.length)return;
  if(ok(d.home)&&d.home>=0&&d.home<SP.length)setHome(d.home);HS.length=0;hs.clear();hl.forEach(h=>addH(h[0],h[1],h[2],Math.round(num(h[3],1,10,1))));
  const iv=d.inv||{};['wood','stone','iron','food','coin'].forEach(k=>{inv[k]=num(iv[k],0,k=='food'?1e4:1e9,inv[k])});
  WPN.forEach(w=>{const l=d.own&&d.own[w.id];if(ok(l)&&l>=1&&l<=5)own[w.id]=l});
  eq=own[d.eq]?d.eq:Object.keys(own)[0]||null;cyc=num(d.cyc,0,1e7,0);
  A.length=0;for(let i=0,n=num(d.army,0,12,0)|0;i<n;i++)A.push(newSoldier());
- (Array.isArray(d.bridges)?d.bridges:[]).slice(0,5000).forEach(b=>{if(Array.isArray(b)&&ok(b[0])&&ok(b[1])&&b[0]>0&&b[1]>0&&b[0]<NW-1&&b[1]<NH-1&&!isLand(b[0],b[1]))addBr(b[0],b[1])});
- (Array.isArray(d.walls)?d.walls:[]).forEach(w=>{if(Array.isArray(w)&&ok(w[0])&&ok(w[1])){rmO(w[0]+','+w[1]);if(fr1(w[0],w[1]))addW(w[0],w[1])}});
- (Array.isArray(d.gates)?d.gates:[]).forEach(w=>{const e=Array.isArray(w)&&WA[w[0]+','+w[1]];if(e&&!e.g){e.g=true;e.hp=e.mx=36}});
+ if(API&&LOADWS)applyStructs(LOADWS,null);
+ !API&&(Array.isArray(d.bridges)?d.bridges:[]).slice(0,5000).forEach(b=>{if(Array.isArray(b)&&ok(b[0])&&ok(b[1])&&b[0]>0&&b[1]>0&&b[0]<NW-1&&b[1]<NH-1&&!isLand(b[0],b[1]))addBr(b[0],b[1])});
+ !API&&(Array.isArray(d.walls)?d.walls:[]).forEach(w=>{if(Array.isArray(w)&&ok(w[0])&&ok(w[1])){rmO(w[0]+','+w[1]);if(fr1(w[0],w[1]))addW(w[0],w[1])}});
+ !API&&(Array.isArray(d.gates)?d.gates:[]).forEach(w=>{const e=Array.isArray(w)&&WA[w[0]+','+w[1]];if(e&&!e.g){e.g=true;e.hp=e.mx=36}});
  hap=num(d.hap,0,100,hap);const hs2=HS.filter(h=>h[2]=='house');V.length=0;
  for(let i=0,n=Math.min(num(d.vil,0,99,0)|0,capV());i<n&&hs2.length;i++)V.push(mkV(hs2[i%hs2.length]));
- P.x=P.tx=num(d.x,8,NW*T-8,P.x);P.y=P.ty=num(d.y,8,NH*T-8,P.y)}catch(e){}}
+ SHIPS.length=0;(Array.isArray(d.ships)?d.ships:[]).slice(0,MAXSHIPS).forEach(q=>{if(Array.isArray(q)&&portAt(q[0]+','+q[1])&&!hasShip(q[0]+','+q[1]))SHIPS.push(newShip(q[0]+','+q[1]))});
+ P.x=P.tx=num(d.x,8,NW*T-8,P.x);P.y=P.ty=num(d.y,8,NH*T-8,P.y);
+ if(!walk(P.x/T|0,P.y/T|0)){const b=HS[0];P.x=P.tx=b[0]*T+16;P.y=P.ty=(b[1]+3)*T}}catch(e){}}
 async function save(keep){if(demo||locked||saving||!started)return;const j=JSON.stringify(snap());if(j===lastJ)return;saving=true;
  try{const r=await api('save',JSON.parse(j),keep);if(r.s==200)lastJ=j;else if(r.s==409){locked=true;overlay('Игра открыта на другом устройстве.','Играть здесь',()=>location.reload())}else if(r.s==401){locked=true;overlay('Сессия устарела. Закройте игру и откройте её заново из Telegram.')}}catch(e){}saving=false}
-const BTYPES=['house','farm','forge','barracks','granary','tower','hall'];
+const BTYPES=['house','farm','forge','barracks','granary','tower','hall','port'];
 const lab=(t,cx,cy,col)=>{ctx.font='7px "Press Start 2P",monospace';ctx.textBaseline='top';ctx.textAlign='center';const tw=ctx.measureText(t).width;R('rgba(0,0,0,.55)',Math.round(cx-tw/2-3),cy-2,tw+6,10);ctx.fillStyle=col;ctx.fillText(t,cx,cy);ctx.textAlign='left'};
 function mergePlayers(list,full){const prev=new Map(WORLD.players.map(p=>[p.id,p])),ni=Number.isInteger,out=[],seen=new Set();
  for(const p of list.slice(0,100)){if(!p||typeof p.id!='string'||p.id.length>64)continue;
   const x=Math.max(8,Math.min(NW*T-8,+p.x||0)),y=Math.max(8,Math.min(NH*T-8,+p.y||0));
   const hs=(Array.isArray(p.hs)?p.hs:[]).filter(h=>Array.isArray(h)&&BTYPES.includes(h[2])&&ni(h[0])&&ni(h[1])&&h[0]>=0&&h[1]>=0&&h[0]<NW-1&&h[1]<NH-1).slice(0,60).map((h,i)=>[h[0],h[1],h[2],i,Math.max(1,Math.min(10,(h[3]|0)||1))]);
   const o=prev.get(p.id);seen.add(p.id);const nowT=performance.now();let vx=0,vy=0;
-  if(o&&o.ut){const q=(nowT-o.ut)/1000;if(q>.05&&Math.abs(x-o.x)+Math.abs(y-o.y)>=.6){vx=Math.max(-120,Math.min(120,(x-o.x)/q));vy=Math.max(-120,Math.min(120,(y-o.y)/q))}}
+  if(o&&o.ut){const q=(nowT-o.ut)/1000;if(q>.05&&Math.abs(x-o.x)+Math.abs(y-o.y)>=.6){vx=Math.max(-120,Math.min(120,(x-o.x)/q))*.8+(o.vx||0)*.2;vy=Math.max(-120,Math.min(120,(y-o.y)/q))*.8+(o.vy||0)*.2}}
   out.push({id:p.id,vx,vy,ut:nowT,online:p.online!==false,name:String(p.name||'Игрок').replace(/[\u0000-\u001f]/g,'').slice(0,20),home:ni(p.home)?p.home:-1,x,y,rx:o?o.rx:x,ry:o?o.ry:y,fl:!!p.fl,mv:false,armor:p.armor!==false,eq:p.eq=='sword'||p.eq=='bow'?p.eq:null,hs:Array.isArray(p.hs)||!o?hs:o.hs})}
  if(!full)for(const o of prev.values())if(!seen.has(o.id))out.push(o.online?Object.assign(o,{online:false}):o);
- WORLD.players=out}
+ WORLD.players=out;
+ const nz=new Map();for(const p of list.slice(0,100)){if(!p||!Array.isArray(p.zb)||p.online===false)continue;for(const z of p.zb.slice(0,12)){if(!Array.isArray(z)||!ni(z[0]))continue;const k=p.id+':'+z[0],o=RZ.get(k),x=+z[1]||0,y=+z[2]||0;nz.set(k,{own:p.id,id:z[0],x:o?o.x:x,y:o?o.y:y,tx:x,ty:y,hp:o&&o.hp<(+z[3]||0)?o.hp:(+z[3]||1),mh:+z[4]||30,fl:!!z[5],n:!!z[6]})}}
+ RZ.clear();nz.forEach((v,k)=>RZ.set(k,v))}
 let syncErr=0,syncOk=0,syncN=0;
+function syncWh(){const o=[];for(const k in WA){const w=WA[k];if(w.dirty){w.dirty=0;o.push([w.x,w.y,Math.max(0,Math.round(w.hp))])}}for(const k in whq){o.push(whq[k]);delete whq[k]}return o.slice(0,40)}
+function worldIn(j){try{if(Array.isArray(j.hits))for(const h of j.hits){const z=Z.find(q=>q.id==h[0]);if(z)z.hp-=Math.max(0,Math.min(60,+h[1]||0))}
+ const w=j.world;if(!w)return;if(Array.isArray(w.structs)&&Array.isArray(w.w))applyStructs(w.structs,w.w);if(typeof w.ss=='string')SS=w.ss;
+ if(Array.isArray(w.dead))applyDead(w.dead);if(typeof w.sd=='string')SDD=w.sd}catch(e){console.error(e)}}
 async function syncOnce(){if(demo||locked||!started||document.hidden)return;
  const full=syncN%8==0;
- try{const r=await api('sync',{x:Math.round(P.x),y:Math.round(P.y),fl:P.fl?1:0,armor,eq,cx:Math.round((cam.x+W/2)/T),cy:Math.round((cam.y+H/2)/T),r:Math.ceil(Math.max(W,H)/T)+25,full:full?1:0});
-  if(r.s==200&&r.j&&Array.isArray(r.j.players)){syncErr=0;syncOk=performance.now();syncN++;mergePlayers(r.j.players,full)}
+ try{const r=await api('sync',{x:Math.round(P.x),y:Math.round(P.y),fl:P.fl?1:0,armor,eq,cx:Math.round((cam.x+W/2)/T),cy:Math.round((cam.y+H/2)/T),r:Math.ceil(Math.max(W,H)/T)+25,full:full?1:0,ss:SS,sd:SDD,zb:Z.slice(0,12).map(z=>[z.id,Math.round(z.x),Math.round(z.y),Math.round(z.hp),Math.round(z.mh),z.fl?1:0,z.n?1:0]),hits:hitq.splice(0,20),wh:syncWh(),bd:(()=>{const v=Math.min(400,BOSS.bd);BOSS.bd-=v;return v})()});
+  if(r.s==200&&r.j&&Array.isArray(r.j.players)){syncErr=0;syncOk=performance.now();syncN++;mergePlayers(r.j.players,full);worldIn(r.j);bossIn(r.j)}
   else if(r.s==409){locked=true;overlay('Игра открыта на другом устройстве.','Играть здесь',()=>location.reload())}
   else if(r.s==401){locked=true;overlay('Сессия устарела. Закройте игру и откройте её заново из Telegram.')}
   else syncErr++}catch(e){syncErr++}
  if(syncErr>=3&&performance.now()-syncOk>20000)WORLD.players=[]}
-function syncLoop(){const run=async()=>{const t0=performance.now();await syncOnce();const gap=syncErr>=3?30000:WORLD.players.some(p=>p.online)?700:3000;setTimeout(run,Math.max(100,gap-(performance.now()-t0)))};run()}
+function syncLoop(){const run=async()=>{const t0=performance.now();await syncOnce();const gap=syncErr>=3?30000:WORLD.players.some(p=>p.online)?450:3000;setTimeout(run,Math.max(100,gap-(performance.now()-t0)))};run()}
 async function pickFreeHome(){try{const q=await api('sync',{peek:1});if(q.s==200&&q.j&&Array.isArray(q.j.players)){const taken=new Set(Array.isArray(q.j.homes)?q.j.homes:q.j.players.map(p=>p.home));let i=HOME.i;for(let k=0;k<SP.length&&taken.has(i);k++)i=(i+1)%SP.length;if(i!==HOME.i)setHome(i)}}catch(e){}}
 const fmtT=s=>{s=Math.round(s);const h=s/3600|0,m=(s%3600)/60|0;return h?h+' ч '+m+' мин':Math.max(1,m)+' мин'};
 function showReport(r){if(!r||typeof r!='object'||!(r.away>0))return Promise.resolve();
  const n=v=>Math.max(0,Math.round(+v)||0),st=r.stolen||{},L=[];
  L.push('Вас не было: <b>'+fmtT(r.away)+'</b>'+(r.simulated<r.away?' (учтено '+fmtT(r.simulated)+')':''));
- if(n(r.raids))L.push('Нападений зомби: <b>'+n(r.raids)+'</b>, отбито: <b>'+n(r.repelled)+'</b>');
+ if(n(r.raids))L.push('Нападений разбойников: <b>'+n(r.raids)+'</b>, отбито: <b>'+n(r.repelled)+'</b>');
  else L.push('Деревню никто не трогал.');
  if(n(r.soldiersLost))L.push('⚔️ Погибло солдат: '+n(r.soldiersLost));
  if(n(r.villagersKilled))L.push('💀 Погибло жителей: '+n(r.villagersKilled));
@@ -812,7 +930,7 @@ function showReport(r){if(!r||typeof r!='object'||!(r.away>0))return Promise.res
  if(n(r.villagersArrived))L.push('👥 Пришло жителей: '+n(r.villagersArrived));
  if(n(r.wallsLost))L.push('🧱 Разрушено стен: '+n(r.wallsLost));
  const lost=[n(st.wood)&&'🪵 '+n(st.wood),n(st.stone)&&'🪨 '+n(st.stone),n(st.food)&&'🌾 '+n(st.food)].filter(Boolean);
- if(lost.length)L.push('Унесено зомби: '+lost.join(' '));
+ if(lost.length)L.push('Унесено разбойниками: '+lost.join(' '));
  if(n(r.coin))L.push('🪙 Заработано монет: +'+n(r.coin));
  return new Promise(res=>overlay('<div style="text-align:left;line-height:1.7">'+L.join('<br>')+'</div>','Продолжить',()=>{ov.style.display='none';res()}))}
 async function boot(){
@@ -820,7 +938,7 @@ async function boot(){
  if(API){overlay('Загрузка…');await tgWait()}
  if(!homeSet)setHome(homeFor(tgUid()||SID));
  if(!API||!initData()){demo=true;ov.style.display='none';document.getElementById('demo').textContent=API?'Демо-режим: откройте игру через Telegram, чтобы прогресс сохранялся на сервере.':'Демо-режим: сервер не подключён, прогресс не сохраняется.'}
- else{try{const r=await api('load');if(r.s!=200)throw new Error(r.s);if(r.j.data)apply(r.j.data);else await pickFreeHome();ov.style.display='none';if(r.j.report)await showReport(r.j.report)}catch(e){overlay('Нет связи с сервером. Ваш прогресс не потерян.','Повторить',boot);return}}
+ else{try{const r=await api('load');if(r.s!=200)throw new Error(r.s);LOADWS=r.j.ws||null;if(r.j.data)apply(r.j.data);else await pickFreeHome();ov.style.display='none';if(r.j.report)await showReport(r.j.report)}catch(e){overlay('Нет связи с сервером. Ваш прогресс не потерян.','Повторить',boot);return}}
  if(!started){started=true;render();requestAnimationFrame(loop);
   if(!demo){syncLoop();setInterval(()=>save(),15000);addEventListener('pagehide',()=>save(true));document.addEventListener('visibilitychange',()=>{if(document.hidden)save(true)})}}}
 document.getElementById('clan').addEventListener('pointerdown',e=>{e.preventDefault();msg='Кланы скоро появятся';msgT=2.5});boot();
